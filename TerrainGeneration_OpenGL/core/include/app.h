@@ -16,9 +16,6 @@ public:
 
 	float GetWindowWidth();
 	float GetWindowHeight();
-
-	float GetWindowWidth(float _width);
-	float GetWindowHeight(float _Height);
 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

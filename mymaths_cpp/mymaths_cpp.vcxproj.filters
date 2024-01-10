@@ -15,89 +15,82 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="externals\glad.c">
+    <ClCompile Include="src\Complex\complex.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="externals\include\imgui\imgui.cpp">
+    <ClCompile Include="src\Float\float2.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="externals\include\imgui\imgui_demo.cpp">
+    <ClCompile Include="src\Float\float2i.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="externals\include\imgui\imgui_draw.cpp">
+    <ClCompile Include="src\Float\float3.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="externals\include\imgui\imgui_impl_glfw.cpp">
+    <ClCompile Include="src\Float\float4.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="externals\include\imgui\imgui_impl_opengl3.cpp">
+    <ClCompile Include="src\Float\floatX.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="externals\include\imgui\imgui_tables.cpp">
+    <ClCompile Include="src\Matrix\matrix.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="externals\include\imgui\imgui_widgets.cpp">
+    <ClCompile Include="src\Matrix\matrix2.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="core\source\main.cpp">
+    <ClCompile Include="src\Matrix\matrix3.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="core\source\renderer.cpp">
+    <ClCompile Include="src\Matrix\matrix4.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="core\source\app.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="externals\stb_image.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="core\source\shader.cpp">
+    <ClCompile Include="src\formulas.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="externals\include\imgui\imconfig.h">
+    <ClInclude Include="include\Complex\complex.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imgui.h">
+    <ClInclude Include="include\Float\float.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imgui_impl_glfw.h">
+    <ClInclude Include="include\Float\float2.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imgui_impl_opengl3.h">
+    <ClInclude Include="include\Float\float2i.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imgui_impl_opengl3_loader.h">
+    <ClInclude Include="include\Float\float3.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imgui_internal.h">
+    <ClInclude Include="include\Float\float4.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imstb_rectpack.h">
+    <ClInclude Include="include\Float\floatX.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imstb_textedit.h">
+    <ClInclude Include="include\Matrix\matrix.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\imgui\imstb_truetype.h">
+    <ClInclude Include="include\Matrix\matrix2.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\renderer.h">
+    <ClInclude Include="include\Matrix\matrix3.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\app.h">
+    <ClInclude Include="include\Matrix\matrix4.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="externals\include\stb_image.h">
+    <ClInclude Include="include\Matrix\matrixX.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\shader.h">
+    <ClInclude Include="include\formulas.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\v_shader.vs" />
-    <None Include="assets\shaders\f_shader.fs" />
+    <ClInclude Include="include\mymaths.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

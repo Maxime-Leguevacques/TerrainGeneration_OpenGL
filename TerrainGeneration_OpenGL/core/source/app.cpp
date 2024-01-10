@@ -9,8 +9,8 @@
 
 App::App()
 {
-    defaultWindowWidth = 800.0f;
-    defaultWindowHeight = 600.0f;
+    defaultWindowWidth = 1920.0f;
+    defaultWindowHeight = 1080.0f;
 }
 
 App* App::GetInstance()
@@ -27,16 +27,6 @@ float App::GetWindowWidth()
 float App::GetWindowHeight()
 {
     return defaultWindowHeight;
-}
-
-float App::GetWindowWidth(float _width)
-{
-    return _width;
-}
-
-float App::GetWindowHeight(float _Height)
-{
-    return _Height;
 }
 
 
@@ -58,8 +48,7 @@ unsigned int loadTexture(char const* path)
 
     int width, height, nrComponents;
     unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
+    if (data) {
         GLenum format;
         if (nrComponents == 1)
             format = GL_RED;
@@ -79,8 +68,8 @@ unsigned int loadTexture(char const* path)
 
         stbi_image_free(data);
     }
-    else
-    {
+
+    else {
         std::cout << "Texture failed to load at path: " << path << std::endl;
         stbi_image_free(data);
     }

@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{06d2034f-ec95-4035-923a-c967055b5549}</ProjectGuid>
-    <RootNamespace>TerrainGenerationOpenGL</RootNamespace>
+    <ProjectGuid>{5762ba37-edb3-4e30-bb14-bda0db9cb32c}</ProjectGuid>
+    <RootNamespace>mymathscpp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,14 +71,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)/core/include;$(SolutionDir)/mymaths_cpp/include;$(IncludePath)</IncludePath>
-    <ExternalIncludePath>$(ProjectDir)externals/include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(ProjectDir)externals/libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)/core/include;$(SolutionDir)/mymaths_cpp/include;$(IncludePath)</IncludePath>
-    <ExternalIncludePath>$(ProjectDir)externals/include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(ProjectDir)externals/libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,13 +111,10 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)mymaths_cpp/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>GLFW\glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);mymaths_cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,50 +126,43 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)mymaths_cpp/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>GLFW\glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);mymaths_cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core\source\app.cpp" />
-    <ClCompile Include="core\source\main.cpp" />
-    <ClCompile Include="core\source\renderer.cpp" />
-    <ClCompile Include="core\source\shader.cpp" />
-    <ClCompile Include="externals\glad.c" />
-    <ClCompile Include="externals\include\imgui\imgui.cpp" />
-    <ClCompile Include="externals\include\imgui\imgui_demo.cpp" />
-    <ClCompile Include="externals\include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="externals\include\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="externals\include\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="externals\include\imgui\imgui_tables.cpp" />
-    <ClCompile Include="externals\include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="externals\stb_image.cpp" />
+    <ClCompile Include="src\Complex\complex.cpp" />
+    <ClCompile Include="src\Float\float2.cpp" />
+    <ClCompile Include="src\Float\float2i.cpp" />
+    <ClCompile Include="src\Float\float3.cpp" />
+    <ClCompile Include="src\Float\float4.cpp" />
+    <ClCompile Include="src\Float\floatX.cpp" />
+    <ClCompile Include="src\formulas.cpp" />
+    <ClCompile Include="src\Matrix\matrix.cpp" />
+    <ClCompile Include="src\Matrix\matrix2.cpp" />
+    <ClCompile Include="src\Matrix\matrix3.cpp" />
+    <ClCompile Include="src\Matrix\matrix4.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\include\app.h" />
-    <ClInclude Include="core\include\renderer.h" />
-    <ClInclude Include="core\include\shader.h" />
-    <ClInclude Include="externals\include\imgui\imconfig.h" />
-    <ClInclude Include="externals\include\imgui\imgui.h" />
-    <ClInclude Include="externals\include\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="externals\include\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="externals\include\imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="externals\include\imgui\imgui_internal.h" />
-    <ClInclude Include="externals\include\imgui\imstb_rectpack.h" />
-    <ClInclude Include="externals\include\imgui\imstb_textedit.h" />
-    <ClInclude Include="externals\include\imgui\imstb_truetype.h" />
-    <ClInclude Include="externals\include\stb_image.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\f_shader.fs" />
-    <None Include="assets\shaders\v_shader.vs" />
+    <ClInclude Include="include\Complex\complex.hpp" />
+    <ClInclude Include="include\Float\float.hpp" />
+    <ClInclude Include="include\Float\float2.hpp" />
+    <ClInclude Include="include\Float\float2i.hpp" />
+    <ClInclude Include="include\Float\float3.hpp" />
+    <ClInclude Include="include\Float\float4.hpp" />
+    <ClInclude Include="include\Float\floatX.hpp" />
+    <ClInclude Include="include\formulas.hpp" />
+    <ClInclude Include="include\Matrix\matrix.hpp" />
+    <ClInclude Include="include\Matrix\matrix2.hpp" />
+    <ClInclude Include="include\Matrix\matrix3.hpp" />
+    <ClInclude Include="include\Matrix\matrix4.hpp" />
+    <ClInclude Include="include\Matrix\matrixX.hpp" />
+    <ClInclude Include="include\mymaths.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
