@@ -2,6 +2,8 @@
 
 #include "renderer.h"
 #include "app.h"
+#include "shader.h"
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -83,47 +85,50 @@ void Renderer::RenderWindow()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0); // Enable the pointer     
 
-    // VS
-    const char* vertexShaderSource = "assets/shaders/v_shader.vs";
-    // FS
-    const char* fragmentShaderSource = "assets/shaders/f_shader.fs";
+    //// VS
+    //const char* vertexShaderSource = "assets/shaders/v_shader.vs";
+    //// FS
+    //const char* fragmentShaderSource = "assets/shaders/f_shader.fs";
 
+    Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
 
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    // VS
+    // //VS
     //const char* vertexShaderSource = "#version 460 core\n"
     //    "layout (location = 0) in vec3 aPos;\n"
     //    "void main()\n"
     //    "{\n"
     //    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
     //    "}\0";
-    // FS
+    ////FS
     //const char* fragmentShaderSource = "#version 460 core\n"
-        //"out vec4 FragColor;\n"
-        //"void main()\n"
-        //"{\n"
-        //"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        //"}\0";
+    //    "out vec4 FragColor;\n"
+    //    "void main()\n"
+    //    "{\n"
+    //    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    //    "}\0";
+
+    //unsigned int vertexShader;
+    //vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    //glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    //glCompileShader(vertexShader);
+    //unsigned int fragmentShader;
+    //fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    //glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    //glCompileShader(fragmentShader);
 
 
-    // Link VS and FS
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram(); // Create a program object
-    glAttachShader(shaderProgram, vertexShader); // Attach the shader objects
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram); // Link the program object
 
-    // Clean shader
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    //// Link VS and FS
+    //unsigned int shaderProgram;
+    //shaderProgram = glCreateProgram(); // Create a program object
+    //glAttachShader(shaderProgram, vertexShader); // Attach the shader objects
+    //glAttachShader(shaderProgram, fragmentShader);
+    //glLinkProgram(shaderProgram); // Link the program object
+    shader.Use();
+
+    //// Clean shader
+    //glDeleteShader(vertexShader);
+    //glDeleteShader(fragmentShader);
 
     InitImGui(window);
 
@@ -135,7 +140,7 @@ void Renderer::RenderWindow()
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Draw triangle
-        glUseProgram(shaderProgram); // Use the program object we created earlier
+        //glUseProgram(shaderProgram); // Use the program object we created earlier
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         RenderImGui();

@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)/core/include;$(SolutionDir)/mymaths_cpp/include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/core/include;$(SolutionDir)/mymaths_cpp/include;$(ProjectDir)\core\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(ProjectDir)externals/include;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(ProjectDir)externals/libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)/core/include;$(SolutionDir)/mymaths_cpp/include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/core/include;$(SolutionDir)/mymaths_cpp/include;$(ProjectDir)\core\include;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(ProjectDir)externals/include;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(ProjectDir)externals/libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
