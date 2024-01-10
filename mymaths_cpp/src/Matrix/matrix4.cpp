@@ -201,11 +201,6 @@ matrix4 matrix4::Rotate(float3 XYZrad)
 }
 
 
-matrix4 matrix4::Rotate(float angel, float3 v)
-{
-	
-}
-
 matrix4 matrix4::Scale(float3 s)
 {
 	matrix4 scale(

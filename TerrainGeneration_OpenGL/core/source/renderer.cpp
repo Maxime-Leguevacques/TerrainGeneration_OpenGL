@@ -2,6 +2,7 @@
 
 #include "renderer.h"
 #include "app.h"
+#include "terrain.h"
 #include "shader.h"
 #include "stb_image.h"
 
