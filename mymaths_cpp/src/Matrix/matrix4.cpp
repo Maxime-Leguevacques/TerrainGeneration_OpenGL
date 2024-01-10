@@ -26,22 +26,23 @@ matrix4::matrix4(
 	float m, float n, float o, float p
 )
 {
-	data[0][0] = a;
-	data[0][1] = b;
-	data[0][2] = c;
-	data[0][3] = d;
-	data[1][0] = e;
-	data[1][1] = f;
-	data[1][2] = g;
-	data[1][3] = h;
-	data[2][0] = i;
-	data[2][1] = j;
-	data[2][2] = k;
-	data[2][3] = l;
-	data[3][0] = m;
-	data[3][1] = n;
-	data[3][2] = o;
-	data[3][3] = p;
+	data[0][0] = a;data[0][1] = b;data[0][2] = c;data[0][3] = d;
+	data[1][0] = e;data[1][1] = f;data[1][2] = g;data[1][3] = h;
+	data[2][0] = i;data[2][1] = j;data[2][2] = k;data[2][3] = l;
+	data[3][0] = m;data[3][1] = n;data[3][2] = o;data[3][3] = p;
+}
+
+matrix4::matrix4(float value)
+{
+	data[0][0] = value; data[0][1] = 0;		data[0][2] = 0;		data[0][3] = 0;
+	data[1][0] = 0;		data[1][1] = value; data[1][2] = 0;		data[1][3] = 0;
+	data[2][0] = 0;		data[2][1] = 0;		data[2][2] = value; data[2][3] = 0;
+	data[3][0] = 0;		data[3][1] = 0;		data[3][2] = 0;		data[3][3] = value;
+
+	elements[0] = data[0][0]; elements[1] = data[0][1]; elements[2] = data[0][2]; elements[3] = data[0][3];
+	elements[4] = data[1][0];elements[5] = data[1][1];elements[6] = data[1][2];elements[7] = data[1][3];
+	elements[8] = data[2][0];elements[9] = data[2][1];elements[10] = data[2][2];elements[11] = data[2][3];
+	elements[12] = data[3][0];elements[13] = data[3][1];elements[14] = data[3][2];elements[15] = data[3][3];
 }
 
 void matrix4::print() const
@@ -136,7 +137,43 @@ matrix4 matrix4::Translate(float3 t)
 		0, 0, 1, t.z,
 		0, 0, 0, 1
 	);
+
+	translate.Inverse();
+
+	Inverse();
+
 	return (*this) * translate;
+}
+
+matrix4 matrix4::Translate(matrix4 _mat4, float3 t)
+{
+	matrix4 translate(
+		1, 0, 0, t.x,
+		0, 1, 0, t.y,
+		0, 0, 1, t.z,
+		0, 0, 0, 1
+	);
+
+	translate.Inverse();
+
+	_mat4.Inverse();
+
+	return _mat4 * translate;
+}
+
+void matrix4::Inverse()
+{
+	matrix4 temp;
+
+	temp.data[0][0] = data[0][0];	temp.data[0][1] = data[1][0];	temp.data[0][2] = data[2][0];	temp.data[0][3] = data[3][0];
+
+	temp.data[1][0] = data[0][1];	temp.data[1][1] = data[1][1];	temp.data[1][2] = data[2][1];	temp.data[1][3] = data[3][1];
+
+	temp.data[2][0] = data[0][2];	temp.data[2][1] = data[1][2];	temp.data[2][2] = data[2][2];	temp.data[2][3] = data[3][2];
+
+	temp.data[3][0] = data[0][3];	temp.data[3][1] = data[1][3];	temp.data[3][2] = data[2][3];	temp.data[3][3] = data[3][3];
+	
+	*this = temp;
 }
 
 matrix4 matrix4::Rotate(float3 XYZrad)
@@ -161,6 +198,12 @@ matrix4 matrix4::Rotate(float3 XYZrad)
 	);
 	matrix4 rotate = rotateX * rotateY * rotateZ;
 	return (*this) * rotate;
+}
+
+
+matrix4 matrix4::Rotate(float angel, float3 v)
+{
+	
 }
 
 matrix4 matrix4::Scale(float3 s)

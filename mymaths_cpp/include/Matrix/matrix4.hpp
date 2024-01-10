@@ -20,8 +20,11 @@ public:
 		float m, float n, float o, float p
 	);
 
+	matrix4(float value);
+
 	// Variables
 	float data[4][4];
+	float elements[16];
 
 	// Functions
 	void print() const;
@@ -30,9 +33,16 @@ public:
 	float4 Diagonal();
 	float Trace();
 	float Determinant();
+	void Inverse();
+
 	// rotation?
 	matrix4 Translate(float3 t);
+	static matrix4 Translate(matrix4 _mat4, float3 t);
+
+
 	matrix4 Rotate(float3 XYZrad);
+	matrix4 Rotate(float angel, float3 v);
+
 	matrix4 Scale(float3 s);
 	matrix4 TRS(float3 translate, float3 rotate, float3 scale);
 	static matrix4 Projection(float fov, float aspectRatio, float zNear, float zFar);

@@ -3,6 +3,7 @@
 #include "renderer.h"
 #include "app.h"
 #include "shader.h"
+#include "stb_image.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -10,11 +11,17 @@
 
 
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
 float vertices[] = {
-    0.5f, 0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
-    -0.5f, 0.5f, 0.0f
+    // positions          // colors           // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 };
 
 unsigned int indices[] = {
@@ -64,71 +71,84 @@ void Renderer::InitWindow()
 
 void Renderer::RenderWindow()
 {
-    // Create VAO
-    unsigned int VAO;
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
     glBindVertexArray(VAO);
 
-    // Create VBO
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // Create EBO
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    // Create Pointer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0); // Enable the pointer     
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // texture coord attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
-    //// VS
-    //const char* vertexShaderSource = "assets/shaders/v_shader.vs";
-    //// FS
-    //const char* fragmentShaderSource = "assets/shaders/f_shader.fs";
+
+    unsigned int texture1, texture2;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    stbi_set_flip_vertically_on_load(true);
+
+    // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    unsigned char* data = stbi_load("assets/wall.jpg", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    data = stbi_load("assets/awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
 
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
 
-    // //VS
-    //const char* vertexShaderSource = "#version 460 core\n"
-    //    "layout (location = 0) in vec3 aPos;\n"
-    //    "void main()\n"
-    //    "{\n"
-    //    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    //    "}\0";
-    ////FS
-    //const char* fragmentShaderSource = "#version 460 core\n"
-    //    "out vec4 FragColor;\n"
-    //    "void main()\n"
-    //    "{\n"
-    //    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    //    "}\0";
-
-    //unsigned int vertexShader;
-    //vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    //glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    //glCompileShader(vertexShader);
-    //unsigned int fragmentShader;
-    //fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    //glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    //glCompileShader(fragmentShader);
-
-
-
-    //// Link VS and FS
-    //unsigned int shaderProgram;
-    //shaderProgram = glCreateProgram(); // Create a program object
-    //glAttachShader(shaderProgram, vertexShader); // Attach the shader objects
-    //glAttachShader(shaderProgram, fragmentShader);
-    //glLinkProgram(shaderProgram); // Link the program object
     shader.Use();
 
-    //// Clean shader
-    //glDeleteShader(vertexShader);
-    //glDeleteShader(fragmentShader);
+    shader.SetInt("texture1", 0);
+    shader.SetInt("texture2", 1);
 
     InitImGui(window);
 
@@ -139,8 +159,37 @@ void Renderer::RenderWindow()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+
+        matrix4 transform(1.0f);
+        transform = transform.Translate(float3(0.5f, -0.5f, 0.0f));
+        
+        //std::cout << transform << std::endl;
+        transform = transform.Rotate(float3(0.0f, 0.0f, 1.0f));
+
+  //      glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+  //      for (int i = 0; i < 4; i++)
+		//{
+  //          for (int j = 0; j < 4; j++)
+  //              std::cout << transform[i][j] << "   ";
+  //          std::cout << std::endl;
+		//}
+  //      std::cout << std::endl;
+  //      transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+  //      transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        shader.Use();
+        //unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
+        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+        unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform.data[0][0]);
+
+        //shader.SetMatrix4("transform", transform);
         // Draw triangle
-        //glUseProgram(shaderProgram); // Use the program object we created earlier
+        glBindVertexArray(VAO); 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         RenderImGui();
@@ -148,6 +197,10 @@ void Renderer::RenderWindow()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }
 
 void Renderer::CloseWindow()
@@ -155,7 +208,6 @@ void Renderer::CloseWindow()
     CleanImGui();
     glfwTerminate();
 }
-
 
 #pragma region Renderer ImGui
 

@@ -148,6 +148,7 @@
     <ClCompile Include="core\source\app.cpp" />
     <ClCompile Include="core\source\main.cpp" />
     <ClCompile Include="core\source\renderer.cpp" />
+    <ClCompile Include="core\source\resourceManager.cpp" />
     <ClCompile Include="core\source\shader.cpp" />
     <ClCompile Include="externals\glad.c" />
     <ClCompile Include="externals\include\glm\detail\glm.cpp" />
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="core\include\app.h" />
     <ClInclude Include="core\include\renderer.h" />
+    <ClInclude Include="core\include\resourceManager.h" />
     <ClInclude Include="core\include\shader.h" />
     <ClInclude Include="externals\include\assimp\aabb.h" />
     <ClInclude Include="externals\include\assimp\ai_assert.h" />
