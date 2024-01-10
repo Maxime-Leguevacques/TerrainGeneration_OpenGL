@@ -201,22 +201,6 @@ matrix4 matrix4::Rotate(float3 XYZrad)
 }
 
 
-matrix4 matrix4::Rotate(float angel, float3 v)
-{
-	float3 axis = v.normalize();
-	float c = cos(angel);
-	float s = sin(angel);
-	float t = 1 - c;
-
-	matrix4 rotate(
-		t * axis.x * axis.x + c, t * axis.x * axis.y - s * axis.z, t * axis.x * axis.z + s * axis.y, 0,
-		t * axis.x * axis.y + s * axis.z, t * axis.y * axis.y + c, t * axis.y * axis.z - s * axis.x, 0,
-		t * axis.x * axis.z - s * axis.y, t * axis.y * axis.z + s * axis.x, t * axis.z * axis.z + c, 0,
-		0, 0, 0, 1
-	);
-	return (*this) * rotate;
-}
-
 matrix4 matrix4::Scale(float3 s)
 {
 	matrix4 scale(
