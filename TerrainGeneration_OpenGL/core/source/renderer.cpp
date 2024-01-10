@@ -4,33 +4,73 @@
 #include "app.h"
 #include "terrain.h"
 #include "shader.h"
+#include "camera.h"
 #include "stb_image.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 float vertices[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
-unsigned int indices[] = {
-
-    0, 1, 3,
-    1, 2, 3
+glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f,  2.0f, -2.5f),
+        glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
 };
-
 Renderer::Renderer()
 {
 }
@@ -43,7 +83,9 @@ Renderer* Renderer::GetInstance()
 
 void Renderer::InitWindow()
 {
-    App* app = App::GetInstance();
+    // Init timer
+    DeltaTime = 0.0f;
+    LastFrame = 0.0f;
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -55,7 +97,6 @@ void Renderer::InitWindow()
 #endif
 
     window = glfwCreateWindow(app->GetWindowWidth(), app->GetWindowHeight(), "LearnOpenGL", NULL, NULL);
-
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -68,10 +109,14 @@ void Renderer::InitWindow()
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::RenderWindow()
 {
+    Camera* camera = Camera::GetInstance();
+
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -83,17 +128,14 @@ void Renderer::RenderWindow()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    // texture coord attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
 
 
     unsigned int texture1, texture2;
@@ -158,40 +200,60 @@ void Renderer::RenderWindow()
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        matrix4 transform(1.0f);
-        transform = transform.Translate(float3(0.5f, -0.5f, 0.0f));
-        
+        //matrix4 transform(1.0f);
+        //transform = transform.Translate(float3(0.5f, -0.5f, 0.0f));
+        //transform = transform.Rotate(float3(0.0f, 0.0f, 1.0f));
+        //transform = matrix4::Rotate(transform, (float)glfwGetTime(), float3(0.0f, 0.0f, 1.0f));
         //std::cout << transform << std::endl;
-        transform = transform.Rotate(float3(0.0f, 0.0f, 1.0f));
-
-  //      glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-  //      for (int i = 0; i < 4; i++)
+        //glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        //transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+        //transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        //for (int i = 0; i < 4; i++)
 		//{
-  //          for (int j = 0; j < 4; j++)
-  //              std::cout << transform[i][j] << "   ";
-  //          std::cout << std::endl;
+            //for (int j = 0; j < 4; j++)
+                //std::cout << transform[i][j] << "   ";
+            //std::cout << std::endl;
 		//}
-  //      std::cout << std::endl;
-  //      transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-  //      transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        //std::cout << std::endl;
         shader.Use();
         //unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
         //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-        unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform.data[0][0]);
+        //unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
+        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform.data[0][0]);
 
         //shader.SetMatrix4("transform", transform);
-        // Draw triangle
-        glBindVertexArray(VAO); 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        //glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+
+        glm::mat4 view = glm::lookAt(camera->GetCameraPos(), camera->GetCameraPos() + camera->GetCameraFront(), camera->GetCameraUp());
+        glm::mat4 projection = glm::mat4(1.0f);
+        projection = glm::perspective(glm::radians(45.0f), (float)app->GetWindowWidth() / (float)app->GetWindowHeight(), 0.1f, 100.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        // pass transformation matrices to the shader
+        shader.SetMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+        shader.SetMat4("view", view);
+
+        // render boxes
+        glBindVertexArray(VAO);
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            shader.SetMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         RenderImGui();
 

@@ -17,7 +17,6 @@ int main()
     // Clean
     renderer->CloseWindow();
 
-
     std::cout << "Closed Window" << std::endl;
 
     return 0;

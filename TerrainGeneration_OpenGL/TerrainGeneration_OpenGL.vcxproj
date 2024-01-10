@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\source\app.cpp" />
+    <ClCompile Include="core\source\camera.cpp" />
     <ClCompile Include="core\source\main.cpp" />
     <ClCompile Include="core\source\renderer.cpp" />
     <ClCompile Include="core\source\resourceManager.cpp" />
@@ -164,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\app.h" />
+    <ClInclude Include="core\include\camera.h" />
     <ClInclude Include="core\include\renderer.h" />
     <ClInclude Include="core\include\resourceManager.h" />
     <ClInclude Include="core\include\shader.h" />
