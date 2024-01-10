@@ -164,28 +164,28 @@ void Renderer::RenderWindow()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        matrix4 transform(1.0f);
-        transform = transform.Translate(float3(0.5f, -0.5f, 0.0f));
+        //matrix4 transform(1.0f);
+        //transform = transform.Translate(float3(0.5f, -0.5f, 0.0f));
         
         //std::cout << transform << std::endl;
-        transform = transform.Rotate(float3(0.0f, 0.0f, 1.0f));
+        //transform = transform.Rotate(float3(0.0f, 0.0f, (float)glfwGetTime()));
 
-  //      glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-  //      for (int i = 0; i < 4; i++)
-		//{
-  //          for (int j = 0; j < 4; j++)
-  //              std::cout << transform[i][j] << "   ";
-  //          std::cout << std::endl;
-		//}
-  //      std::cout << std::endl;
-  //      transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-  //      transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        for (int i = 0; i < 4; i++)
+		{
+            for (int j = 0; j < 4; j++)
+                std::cout << transform[i][j] << "   ";
+            std::cout << std::endl;
+		}
+        std::cout << std::endl;
+        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
         shader.Use();
-        //unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
-        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
         unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform.data[0][0]);
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+        //unsigned int transformLoc = glGetUniformLocation(shader.Id, "transform");
+        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform.data[0][0]);
 
         //shader.SetMatrix4("transform", transform);
         // Draw triangle
