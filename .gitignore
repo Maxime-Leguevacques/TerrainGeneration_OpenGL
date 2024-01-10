@@ -80,7 +80,7 @@ $RECYCLE.BIN/
 # Mono auto generated files
 mono_crash.*
 
-# add libs 
+# excluding libs folder
 !externals/
 !externals/*
 
