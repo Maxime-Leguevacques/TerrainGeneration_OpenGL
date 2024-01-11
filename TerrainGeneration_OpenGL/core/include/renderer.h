@@ -23,4 +23,6 @@ public:
 
 	float DeltaTime;
 	float LastFrame;
+
+	float depth = 0.0f;
 };
