@@ -200,6 +200,40 @@ matrix4 matrix4::Rotate(float3 XYZrad)
 	return (*this) * rotate;
 }
 
+matrix4 matrix4::Rotate(matrix4 _mat4, float angle, float3 v)
+{
+	float const a = angle;
+	float const c = cos(a);
+	float const s = sin(a);
+
+	float3 axis = v.normalize();
+	float3 temp = axis * (1.0f - c);
+
+	matrix4 rotate(1.0f);
+	rotate.Inverse();
+	rotate.data[0][0] = c + temp.x * axis.x;
+	rotate.data[0][1] = temp.x * axis.y + s * axis.z;
+	rotate.data[0][2] = temp.x * axis.z - s * axis.y;
+
+	rotate.data[1][0] = temp.y * axis.x - s * axis.z;
+	rotate.data[1][1] = c + temp.y * axis.y;
+	rotate.data[1][2] = temp.y * axis.z + s * axis.x;
+
+	rotate.data[2][0] = temp.z * axis.x + s * axis.y;
+	rotate.data[2][1] = temp.z * axis.y - s * axis.x;
+	rotate.data[2][2] = c + temp.z * axis.z;
+
+
+	matrix4 result(1.0f);
+	result.Inverse();
+	result.data[0][0] = _mat4.data[0][0] * rotate.data[0][0] + _mat4.data[0][1] * rotate.data[0][1] + _mat4.data[0][2] * rotate.data[0][2];
+	result.data[0][1] = _mat4.data[0][0] * rotate.data[1][0] + _mat4.data[0][1] * rotate.data[1][1] + _mat4.data[0][2] * rotate.data[1][2];
+	result.data[0][2] = _mat4.data[0][0] * rotate.data[2][0] + _mat4.data[0][1] * rotate.data[2][1] + _mat4.data[0][2] * rotate.data[2][2];
+	result.data[0][3] = _mat4.data[0][3];
+
+	return result;
+}
+
 
 matrix4 matrix4::Scale(float3 s)
 {
