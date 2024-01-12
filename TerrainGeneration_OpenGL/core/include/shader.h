@@ -9,6 +9,10 @@
 
 #include "mymaths.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 
 class Shader
 {
@@ -35,6 +39,8 @@ public:
 	void SetMatrix2(const std::string& _name, const matrix2& _matrix) const;
 	void SetMatrix3(const std::string& _name, const matrix3& _matrix) const;
 	void SetMatrix4(const std::string& _name, const matrix4& _matrix) const;
+
+	void SetMat4(const std::string& _name, const glm::mat4& mat) const;
 
 	// Variables
 	unsigned int Id;

@@ -1,15 +1,21 @@
 #version 460 core
 out vec4 FragColor;
-
-in vec3 ourColor;
-in vec2 TexCoord;
-
-// texture sampler
-uniform sampler2D texture1;
-uniform sampler2D texture2;
+in vec2 coord;
+uniform sampler2D tex1;
+uniform sampler2D tex2;
+uniform sampler2D dep;
+in vec3 n_p;
 
 void main()
 {
-	//FragColor = texture(texture1, TexCoord) * vec4(ourColor, 1.0);
-	FragColor = mix(texture(texture1, TexCoord) * vec4(ourColor, 1.0), texture(texture2, TexCoord), 0.2);
+    int m = 2;
+    if(n_p.y > m)
+    {
+        FragColor = texture(tex1, coord);
+    }
+    else
+    {
+        float alpha = n_p.y / (m);
+        FragColor = texture2D(tex1, coord) * alpha + texture2D(tex2, coord) * (1 - alpha);
+    }
 }

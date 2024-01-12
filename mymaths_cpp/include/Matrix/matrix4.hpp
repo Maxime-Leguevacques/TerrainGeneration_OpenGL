@@ -41,7 +41,7 @@ public:
 
 
 	matrix4 Rotate(float3 XYZrad);
-	matrix4 Rotate(float angel, float3 v);
+	static matrix4 Rotate(matrix4 _mat4, float angle, float3 v);
 
 	matrix4 Scale(float3 s);
 	matrix4 TRS(float3 translate, float3 rotate, float3 scale);
