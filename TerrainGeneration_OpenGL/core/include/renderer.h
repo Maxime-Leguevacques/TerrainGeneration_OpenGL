@@ -25,4 +25,5 @@ public:
 	float LastFrame;
 
 	float depth = 0.0f;
+	float upPos = 0.0f;
 };

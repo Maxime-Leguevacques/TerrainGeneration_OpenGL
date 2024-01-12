@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 out vec4 FragColor;
 in vec2 coord;
 uniform sampler2D tex1;
@@ -16,6 +16,6 @@ void main()
     else
     {
         float alpha = n_p.y / (m);
-        FragColor = texture2D(tex1,coord)*alpha+texture2D(tex2,coord)*(1-alpha);
+        FragColor = texture2D(tex1, coord) * alpha + texture2D(tex2, coord) * (1 - alpha);
     }
 }

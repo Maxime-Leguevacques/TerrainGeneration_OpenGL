@@ -5,6 +5,7 @@
 #include "terrain.h"
 #include "shader.h"
 #include "camera.h"
+#include "texture.h"
 #include "stb_image.h"
 
 #include "imgui/imgui.h"
@@ -86,63 +87,16 @@ void Renderer::RenderWindow()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    unsigned int dep = 0, texture1 = 0, texture2 = 0;
 
-    unsigned int dep, texture1, texture2;
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
+    Texture* map = new Texture(dep);
 
-    glGenTextures(1, &dep);
-    glBindTexture(GL_TEXTURE_2D, dep);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    unsigned char* data = stbi_load("assets/heightmap.png", &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
+    Texture* T1 = new Texture(texture1);
+    Texture* T2 = new Texture(texture2);
 
-    stbi_image_free(data);
-
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_set_flip_vertically_on_load(true);
-
-
-    data = stbi_load("assets/rock.jpg", &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-
-    stbi_image_free(data);
-
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    data = stbi_load("assets/water.jpg", &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-
-    stbi_image_free(data);
+    map->LoadTexture("assets/heightmap.png");
+    T1->LoadTexture("assets/rock.jpg");
+    T2->LoadTexture("assets/water.jpg");
 
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
 
@@ -169,11 +123,11 @@ void Renderer::RenderWindow()
 
         shader.Use();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, dep);
+        glBindTexture(GL_TEXTURE_2D, map->GetTextureName());
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        glBindTexture(GL_TEXTURE_2D, T1->GetTextureName());
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        glBindTexture(GL_TEXTURE_2D, T2->GetTextureName());
 
         glm::mat4 view = glm::lookAt(camera->GetCameraPos(), camera->GetCameraPos() + camera->GetCameraFront(), camera->GetCameraUp());
 
@@ -190,7 +144,7 @@ void Renderer::RenderWindow()
         // render boxes
         glBindVertexArray(VAO);
         glm::mat4 Model = glm::mat4(1.0f);
-        Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, depth));
+        Model = glm::translate(Model, glm::vec3(0.0f, upPos, depth));
         
         shader.SetMat4("model", Model);
         glDrawElements(GL_TRIANGLES, (map1->rows - 1) * (map1->cols - 1) * 6, GL_UNSIGNED_INT, 0);
@@ -232,6 +186,7 @@ void Renderer::RenderImGui()
     ImGui::Begin("Hello, world!");
 
     ImGui::SliderFloat("Depth", &depth, -30.0f, 30.0f, "%.f", 0);
+    ImGui::SliderFloat("Vertical", &upPos, -30.0f, 30.0f, "%.f", 0);
 
     ImGui::End();
     ImGui::Render();

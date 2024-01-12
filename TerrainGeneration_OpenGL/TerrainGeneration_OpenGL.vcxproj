@@ -152,6 +152,7 @@
     <ClCompile Include="core\source\resourceManager.cpp" />
     <ClCompile Include="core\source\shader.cpp" />
     <ClCompile Include="core\source\terrain.cpp" />
+    <ClCompile Include="core\source\texture.cpp" />
     <ClCompile Include="externals\glad.c" />
     <ClCompile Include="externals\include\glm\detail\glm.cpp" />
     <ClCompile Include="externals\include\imgui\imgui.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="core\include\resourceManager.h" />
     <ClInclude Include="core\include\shader.h" />
     <ClInclude Include="core\include\terrain.h" />
+    <ClInclude Include="core\include\texture.h" />
     <ClInclude Include="externals\include\assimp\aabb.h" />
     <ClInclude Include="externals\include\assimp\ai_assert.h" />
     <ClInclude Include="externals\include\assimp\anim.h" />
