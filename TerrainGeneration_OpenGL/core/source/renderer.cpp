@@ -59,34 +59,10 @@ void Renderer::InitWindow()
 
 void Renderer::RenderWindow()
 {
-    int row_num = 200, col_num = 200;
-    std::vector<float> p;
-    float x = -50, z = -50;
-    for (int i = 0; i < row_num; i++) {
-        x = -5;
-        for (int j = 0; j < col_num; j++) {
-            p.push_back(x);
-            p.push_back(0);
-            p.push_back(z);
-            p.push_back(1.0f / col_num * j);
-            p.push_back(1 - i * 1.0f / row_num);
-            x += 0.1;
-        }
-        z += 0.1;
-    }
+    Terrain* map1 = new Terrain("assets/heightmap.png");
+    map1->GenerateVertexData(0.4f);
+    map1->GenerateIndexData();
 
-    std::vector<unsigned int> indicess;
-    for (int i = 1; i < row_num; i++) {
-        for (int j = 1; j < col_num; j++) {
-            indicess.push_back((i - 1) * col_num + j - 1);
-            indicess.push_back((i - 1) * col_num + j);
-            indicess.push_back(i * col_num + j - 1);
-
-            indicess.push_back(i * col_num + j - 1);
-            indicess.push_back((i - 1) * col_num + j);
-            indicess.push_back(i * col_num + j);
-        }
-    }
 
     Camera* camera = Camera::GetInstance();
 
@@ -98,10 +74,10 @@ void Renderer::RenderWindow()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, p.size() * sizeof(float), p.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, map1->vertices.size() * sizeof(float), map1->vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicess.size() * sizeof(unsigned int), indicess.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, map1->indices.size() * sizeof(unsigned int), map1->indices.data(), GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -217,7 +193,7 @@ void Renderer::RenderWindow()
         Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, depth));
         
         shader.SetMat4("model", Model);
-        glDrawElements(GL_TRIANGLES, (row_num - 1) * (col_num - 1) * 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, (map1->rows - 1) * (map1->cols - 1) * 6, GL_UNSIGNED_INT, 0);
 
         RenderImGui();
 

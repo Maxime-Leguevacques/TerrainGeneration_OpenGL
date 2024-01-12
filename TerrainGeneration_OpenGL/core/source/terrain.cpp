@@ -19,63 +19,52 @@ Terrain::~Terrain()
 
 Terrain::Terrain(const char* _imagePath)
 {
-	GenerateVertexData(_imagePath);
-	GenerateIndexData();
+	heightmap = stbi_load(_imagePath, &width, &height, &nChannel, 0);
 }
 
-void Terrain::GenerateVertexData(const char* _imagePath)
+void Terrain::SetHeightmap(const char* _imagePath)
 {
-	unsigned char* image = stbi_load(_imagePath, &width, &height, &nChannel, 0);
-	std::cout << "image width : " << width << " height : " << height << std::endl;
+	heightmap = stbi_load(_imagePath, &width, &height, &nChannel, 0);
+}
 
-	for (int i = 0; i < height; i++) {
-		for (int j = 0; j < width; j++) {
-			float xpos = j / (float)width;
-			float ypos = 0;
-			float zpos = i / (float)height;
-			vertices.push_back(float3(xpos, ypos, zpos));
+void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSeperationDist)
+{
+	// Load the heightmap and store its dimensions
+	std::cout << "heightmap dimensions : " << width << " " << height << std::endl;
+	rows = width, cols = height;
+	rows *= _heightmapSizeMult;
+	cols *= _heightmapSizeMult;
+
+	// Initialize a grid of vertices using the heightmap's dimensions
+	float z = -50;			// offset for z to see it in scene
+	// Make grid
+	for (int i = 0; i < rows; i++) {
+		float x = -5;		// initialize the start position of a vertex' x 
+		for (int j = 0; j < cols; j++) {
+			vertices.push_back(x);
+			vertices.push_back(0);		// the y coordinate will be calculated in the shader
+			vertices.push_back(z);
+			// texture positions
+			vertices.push_back(1.0f / cols * j);
+			vertices.push_back(1 - i * 1.0f / rows);
+			x += _verticesSeperationDist;
 		}
+		z += _verticesSeperationDist;
 	}
 }
 
-void Terrain::GenerateVertexData2(const char* _imagePath)
-{
-	unsigned char* image = stbi_load(_imagePath, &width, &height, &nChannel, 0);
-	std::cout << "image width : " << width << " height : " << height << std::endl;
-
-	for (int i = 0; i < height; i++) {
-		for (int j = 0; j < width; j++) {
-			unsigned char r = image[(j + i * width) * 3 + 0];
-			unsigned char g = image[(j + i * width) * 3 + 1];
-			unsigned char b = image[(j + i * width) * 3 + 2];
-			int gValue = (int)((r + g + b) / 3);
-			float xpos = ((float)j / (float)(width - 1)) - 0.5f;
-			float ypos = (float)gValue / (float)255;
-			float zpos = ((float)i / (float)(height - 1)) - 0.5f;
-			vertices.push_back(float3(xpos, ypos, zpos));
-		}
-	}
-	//for (int i = 0; i < vertices.size(); i++) {
-		//std::cout << vertices[i].x << " " << vertices[i].y << " " << vertices[i].z << std::endl;
-	//}
-}
 
 void Terrain::GenerateIndexData() {
-	for (int i = 0; i < height - 1; i++) {
-		for (int j = 0; j < width - 1; j++) {
-			int topLeftIndexNum = (int)(i * width + j);
-			int topRightIndexNum = (int)(i * width + j + 1);
-			int bottomLeftIndexNum = (int)((i + 1) * width + j);
-			int bottomRightIndexNum = (int)((i + 1) * width + j + 1);
+	// Indices positions
+	for (int i = 1; i < rows; i++) {
+		for (int j = 1; j < cols; j++) {
+			indices.push_back((i - 1) * cols + j - 1);
+			indices.push_back((i - 1) * cols + j);
+			indices.push_back(i * cols + j - 1);
 
-			// write out two triangles
-			indices.push_back(topLeftIndexNum);
-			indices.push_back(bottomLeftIndexNum);
-			indices.push_back(topRightIndexNum);
-
-			indices.push_back(topRightIndexNum);
-			indices.push_back(bottomLeftIndexNum);
-			indices.push_back(bottomRightIndexNum);
+			indices.push_back(i * cols + j - 1);
+			indices.push_back((i - 1) * cols + j);
+			indices.push_back(i * cols + j);
 		}
 	}
 }
