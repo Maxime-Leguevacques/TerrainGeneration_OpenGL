@@ -64,7 +64,6 @@ void Renderer::RenderWindow()
     map1->GenerateVertexData(0.4f);
     map1->GenerateIndexData();
 
-
     Camera* camera = Camera::GetInstance();
 
     unsigned int VBO, VAO, EBO;
@@ -78,7 +77,7 @@ void Renderer::RenderWindow()
     glBufferData(GL_ARRAY_BUFFER, map1->vertices.size() * sizeof(float), map1->vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, map1->indices.size() * sizeof(unsigned int), map1->indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, map1->indices.size() * sizeof(int), map1->indices.data(), GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -96,7 +95,7 @@ void Renderer::RenderWindow()
 
     map->LoadTexture("assets/heightmap.png");
     T1->LoadTexture("assets/rock.jpg");
-    T2->LoadTexture("assets/water.jpg");
+    //T2->LoadTexture("assets/water.jpg");
 
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
 
@@ -105,6 +104,7 @@ void Renderer::RenderWindow()
     shader.SetInt("dep", 0);
     shader.SetInt("tex1", 1);
     shader.SetInt("tex2", 2);
+    shader.SetFloat("heightMult", 4.0f);
 
     InitImGui(window);
     float deltaTime, lastFrame = 0.0f;
@@ -140,6 +140,7 @@ void Renderer::RenderWindow()
         // pass transformation matrices to the shader
         shader.SetMat4("projection", projection);
         shader.SetMat4("view", view);
+
 
         // render boxes
         glBindVertexArray(VAO);

@@ -6,13 +6,14 @@
 
 
 class Terrain {
-public:
+private:
 	int width, height, nChannel;
-	int rows, cols;
 	unsigned char* heightmap;
+
+public:
 	std::vector<float> vertices;
 	std::vector<int> indices;
-
+	int rows, cols;
 
 public:
 	Terrain();
@@ -21,7 +22,6 @@ public:
 	Terrain(const char* _imagePath);
 
 	void SetHeightmap(const char* _imagePath);
-	void Draw();
 	void GenerateVertexData(float _heightmapSizeMult, float _verticesSeperationDist = 0.1f);
 	void GenerateIndexData();
 };

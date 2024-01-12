@@ -53,7 +53,6 @@ void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSepera
 	}
 }
 
-
 void Terrain::GenerateIndexData() {
 	// Indices positions
 	for (int i = 1; i < rows; i++) {
@@ -67,22 +66,4 @@ void Terrain::GenerateIndexData() {
 			indices.push_back(i * cols + j);
 		}
 	}
-}
-
-void Terrain::Draw()
-{
-	unsigned int terrainVAO, terrainVBO, terrainEBO;
-	glGenBuffers(1, &terrainVAO);
-	glBindVertexArray(terrainVAO);
-
-	glGenBuffers(1, &terrainVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float3), &vertices[0], GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glGenBuffers(1, &terrainEBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
 }
