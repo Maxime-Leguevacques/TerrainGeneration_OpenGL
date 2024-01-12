@@ -60,7 +60,7 @@ void Renderer::InitWindow()
 
 void Renderer::RenderWindow()
 {
-    Terrain* map1 = new Terrain("assets/heightmap.png");
+    Terrain* map1 = new Terrain("assets/iceland_heightmap.png");
     map1->GenerateVertexData(0.4f);
     map1->GenerateIndexData();
 
@@ -93,9 +93,9 @@ void Renderer::RenderWindow()
     Texture* T1 = new Texture(texture1);
     Texture* T2 = new Texture(texture2);
 
-    map->LoadTexture("assets/heightmap.png");
+    map->LoadTexture("assets/iceland_heightmap.png");
     T1->LoadTexture("assets/rock.jpg");
-    //T2->LoadTexture("assets/water.jpg");
+    T2->LoadTexture("assets/water.jpg");
 
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
 
@@ -145,7 +145,7 @@ void Renderer::RenderWindow()
         // render boxes
         glBindVertexArray(VAO);
         glm::mat4 Model = glm::mat4(1.0f);
-        Model = glm::translate(Model, glm::vec3(0.0f, upPos, depth));
+        Model = glm::translate(Model, glm::vec3(horizontalPos, upPos, depth));
         
         shader.SetMat4("model", Model);
         glDrawElements(GL_TRIANGLES, (map1->rows - 1) * (map1->cols - 1) * 6, GL_UNSIGNED_INT, 0);
@@ -186,8 +186,9 @@ void Renderer::RenderImGui()
     ImGui::NewFrame();
     ImGui::Begin("Hello, world!");
 
-    ImGui::SliderFloat("Depth", &depth, -30.0f, 30.0f, "%.f", 0);
-    ImGui::SliderFloat("Vertical", &upPos, -30.0f, 30.0f, "%.f", 0);
+    ImGui::SliderFloat("Depth", &depth, -100.0f, 100.0f, "%.f", 0);
+    ImGui::SliderFloat("Vertical", &upPos, -100.0f, 100.0f, "%.f", 0);
+    ImGui::SliderFloat("Horizontal", &horizontalPos, -100.0f, 100.0f, "%.f", 0);
 
     ImGui::End();
     ImGui::Render();
