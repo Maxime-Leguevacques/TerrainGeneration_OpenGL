@@ -248,7 +248,7 @@ void Renderer::RenderWindow()
         shader.SetMat4("projection", projection);
         shader.SetMat4("view", view);
 
-        // render boxes
+        // render map
         glBindVertexArray(mapVAO);
         glm::mat4 Model = glm::mat4(1.0f);
         Model = glm::translate(Model, glm::vec3(0.0f, upPos, depth));
