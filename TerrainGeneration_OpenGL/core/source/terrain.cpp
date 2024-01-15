@@ -2,6 +2,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+//#include <gl/GLU.h>
 
 #include "terrain.h"
 
@@ -20,6 +21,7 @@ Terrain::~Terrain()
 Terrain::Terrain(const char* _imagePath)
 {
 	heightmap = stbi_load(_imagePath, &width, &height, &nChannel, 0);
+	GetVertexHeight(_imagePath, width, height);
 }
 
 void Terrain::SetHeightmap(const char* _imagePath)
@@ -66,4 +68,34 @@ void Terrain::GenerateIndexData() {
 			indices.push_back(i * cols + j);
 		}
 	}
+}
+
+void Terrain::GetVertexHeight(const char* _imagePath, float _heightmapSizeMult, float _verticesSeperationDist)
+{
+	// Load texture
+	unsigned int textureID;
+	int textureWidth, textureHeight;
+	unsigned char* texturePixels = stbi_load(_imagePath, &textureWidth, &textureHeight, NULL, STBI_rgb_alpha);
+
+	// Generate and bind texture
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	// Set parameters and allocate storage
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texturePixels);
+
+	// Read pixel
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &textureWidth);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &textureHeight);
+	
+	for (int i = 0; i < textureWidth * textureHeight * 4; i += 4) {
+		Pixel pixel;
+		pixel.pos = float2(i / 4 % textureWidth, i / 4 / textureWidth);
+		pixel.R = static_cast<int>(texturePixels[i]);
+		pixel.G = static_cast<int>(texturePixels[i + 1]);
+		pixel.B = static_cast<int>(texturePixels[i + 2]);
+		pixel.A = static_cast<int>(texturePixels[i + 3]);
+		pixels.push_back(pixel);
+	}
+	stbi_image_free(texturePixels);
 }

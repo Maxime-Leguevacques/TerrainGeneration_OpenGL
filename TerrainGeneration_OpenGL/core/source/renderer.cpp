@@ -61,16 +61,16 @@ float skyboxVertices[] = {
      1.0f, -1.0f,  1.0f
 };
 
-unsigned int loadCubemap(std::vector<std::string> faces)
+unsigned int loadCubemap(std::vector<std::string> _faces)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
+    for (unsigned int i = 0; i < _faces.size(); i++)
     {
-        unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        unsigned char* data = stbi_load(_faces[i].c_str(), &width, &height, &nrChannels, 0);
         if (data)
         {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -78,7 +78,7 @@ unsigned int loadCubemap(std::vector<std::string> faces)
         }
         else
         {
-            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+            std::cout << "Cubemap texture failed to load at path: " << _faces[i] << std::endl;
             stbi_image_free(data);
         }
     }
@@ -162,7 +162,7 @@ void Renderer::RenderWindow()
     // color attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    //=====================================Load map VAO VBO EBO===================================
+
     #pragma endregion Map VAO VBO EBO
 
     #pragma region Skybox VAO VBO EBO
@@ -175,17 +175,17 @@ void Renderer::RenderWindow()
     glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    //================================s=====Load Skybox VAO VBO EBO================================
+
     #pragma endregion Skybox VAO VBO EBO
 
     unsigned int dep = 0, texture1 = 0, texture2 = 0, texture3 = 0;
 
-    Texture* map = new Texture(dep);
+    Texture* mapTex = new Texture(dep);
 
     Texture* T1 = new Texture(texture1);
     Texture* T2 = new Texture(texture2);
 
-    map->LoadTexture("assets/heightmap.png");
+    mapTex->LoadTexture("assets/heightmap.png");
     T1->LoadTexture("assets/rock.jpg");
     T2->LoadTexture("assets/water.jpg");
 
@@ -231,7 +231,7 @@ void Renderer::RenderWindow()
 
         shader.Use();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, map->GetTextureName());
+        glBindTexture(GL_TEXTURE_2D, mapTex->GetTextureName());
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, T1->GetTextureName());
         glActiveTexture(GL_TEXTURE2);
