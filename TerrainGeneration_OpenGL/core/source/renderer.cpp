@@ -209,6 +209,7 @@ void Renderer::RenderWindow()
     shader.SetInt("dep", 0);
     shader.SetInt("tex1", 1);
     shader.SetInt("tex2", 2);
+    shader.SetFloat("heightMult", 4.0f);
 
     skyboxShader.Use();
     skyboxShader.SetInt("skybox", 0);
@@ -251,7 +252,7 @@ void Renderer::RenderWindow()
         // render map
         glBindVertexArray(mapVAO);
         glm::mat4 Model = glm::mat4(1.0f);
-        Model = glm::translate(Model, glm::vec3(0.0f, upPos, depth));
+        Model = glm::translate(Model, glm::vec3(horizontalPos, upPos, depth));
         
         shader.SetMat4("model", Model);
         glDrawElements(GL_TRIANGLES, (map1->rows - 1) * (map1->cols - 1) * 6, GL_UNSIGNED_INT, 0);
@@ -306,8 +307,9 @@ void Renderer::RenderImGui()
     ImGui::NewFrame();
     ImGui::Begin("Hello, world!");
 
-    ImGui::SliderFloat("Depth", &depth, -30.0f, 30.0f, "%.f", 0);
-    ImGui::SliderFloat("Vertical", &upPos, -30.0f, 30.0f, "%.f", 0);
+    ImGui::SliderFloat("Depth", &depth, -100.0f, 100.0f, "%.f", 0);
+    ImGui::SliderFloat("Vertical", &upPos, -100.0f, 100.0f, "%.f", 0);
+    ImGui::SliderFloat("Horizontal", &horizontalPos, -100.0f, 100.0f, "%.f", 0);
 
     ImGui::End();
     ImGui::Render();

@@ -26,4 +26,5 @@ public:
 
 	float depth = 0.0f;
 	float upPos = 0.0f;
+	float horizontalPos = 0.0f;
 };

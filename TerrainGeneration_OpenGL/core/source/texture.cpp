@@ -11,7 +11,7 @@ Texture::Texture(unsigned int _texName)
     :texName(_texName)
 {
 }
-
+ 
 void Texture::LoadTexture(const char* _path)
 {
     std::string filePath(_path);
