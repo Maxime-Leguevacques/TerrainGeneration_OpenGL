@@ -175,7 +175,7 @@ void Renderer::RenderWindow()
     glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    //=====================================Load Skybox VAO VBO EBO================================
+    //================================s=====Load Skybox VAO VBO EBO================================
     #pragma endregion Skybox VAO VBO EBO
 
     unsigned int dep = 0, texture1 = 0, texture2 = 0, texture3 = 0;
