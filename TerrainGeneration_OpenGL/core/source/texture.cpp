@@ -45,7 +45,25 @@ void Texture::LoadTexture(const char* _path)
     stbi_image_free(data);
 }
 
+unsigned int Texture::loadCubemap(std::vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+
+
+
+    return 0;
+}
+
 unsigned int Texture::GetTextureName()
 {
     return texName;
+}
+
+void Texture::Bind()
+{
+
 }

@@ -1666,5 +1666,7 @@
     <None Include="externals\include\assimp\vector3.inl">
       <Filter>Fichiers d%27en-tête</Filter>
     </None>
+    <None Include="assets\shaders\skybox.fs" />
+    <None Include="assets\shaders\skybox.vs" />
   </ItemGroup>
 </Project>

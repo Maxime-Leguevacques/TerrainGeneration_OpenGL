@@ -21,3 +21,4 @@ public:
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 unsigned int loadTexture(char const* path);
+

@@ -554,6 +554,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\f_shader.fs" />
+    <None Include="assets\shaders\skybox.fs" />
+    <None Include="assets\shaders\skybox.vs" />
     <None Include="assets\shaders\v_shader.vs" />
     <None Include="assimp-vc143-mtd.dll" />
     <None Include="externals\include\assimp\color4.inl" />

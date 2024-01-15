@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <iostream>
 
 class Texture
 {
@@ -15,5 +16,9 @@ public:
 
 	void LoadTexture(const char* _path);
 
+	unsigned int loadCubemap(std::vector<std::string> faces);
+
 	unsigned int GetTextureName();
+
+	void Bind();
 };
