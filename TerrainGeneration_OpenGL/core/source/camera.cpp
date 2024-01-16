@@ -6,12 +6,13 @@
 
 #include "mymaths.hpp"
 
-Camera::Camera()
-	:cameraPos(glm::vec3(0.0f, 0.0f, 0.3f)), 
-	cameraFront(glm::vec3(0.0f, 0.0f, -1.0f)),
-	cameraUp(glm::vec3(0.0f, 1.0f, 0.0f))
-{
-}
+//Camera::Camera()
+//	:cameraPos(glm::vec3(0.0f, 0.0f, 0.3f)), 
+//	cameraFront(glm::vec3(0.0f, 0.0f, -1.0f)),
+//	cameraUp(glm::vec3(0.0f, 1.0f, 0.0f))
+//{
+//	updateCameraVectors();
+//}
 
 Camera* Camera::GetInstance()
 {
@@ -19,17 +20,53 @@ Camera* Camera::GetInstance()
 	return instance;
 }
 
-glm::vec3 Camera::GetCameraPos()
+
+glm::mat4 Camera::GetViewMatrix()
 {
-	return cameraPos;
+	return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }
 
-glm::vec3 Camera::GetCameraFront()
+void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
-	return cameraFront;
+	float velocity = MovementSpeed * deltaTime;
+	if (direction == FORWARD)
+		cameraPos += cameraFront * velocity;
+	if (direction == BACKWARD)
+		cameraPos -= cameraFront * velocity;
+	if (direction == LEFT)
+		cameraPos -= Right * velocity;
+	if (direction == RIGHT)
+		cameraPos += Right * velocity;
+	if (direction == UP)
+		cameraPos.y += velocity;
+	if (direction == DOWN)
+		cameraPos.y -= velocity;
 }
 
-glm::vec3 Camera::GetCameraUp()
+void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
 {
-	return cameraUp;
+	xoffset *= MouseSensitivity;
+	yoffset *= MouseSensitivity;
+
+	Yaw += xoffset;
+	Pitch += yoffset;
+
+	if (constrainPitch)
+	{
+		if (Pitch > 89.0f)
+			Pitch = 89.0f;
+		if (Pitch < -89.0f)
+			Pitch = -89.0f;
+	}
+
+	updateCameraVectors();
+}
+
+void Camera::ProcessMouseScroll(float yoffset)
+{
+	Zoom -= (float)yoffset;
+	if (Zoom < 1.0f)
+		Zoom = 1.0f;
+	if (Zoom > 45.0f)
+		Zoom = 45.0f;
 }
