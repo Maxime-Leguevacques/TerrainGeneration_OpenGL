@@ -20,8 +20,7 @@ Terrain::~Terrain()
 
 Terrain::Terrain(const char* _imagePath)
 {
-	heightmap = stbi_load(_imagePath, &width, &height, &nChannel, 0);
-	GetVertexHeight(_imagePath, width, height);
+	heightmap = stbi_load(_imagePath, &width, &height, &nChannel, STBI_grey);
 }
 
 void Terrain::SetHeightmap(const char* _imagePath)
@@ -31,6 +30,8 @@ void Terrain::SetHeightmap(const char* _imagePath)
 
 void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSeperationDist)
 {
+	int bytePerPixel = 1;
+
 	// Load the heightmap and store its dimensions
 	std::cout << "heightmap dimensions : " << width << " " << height << std::endl;
 	rows = width, cols = height;
@@ -41,17 +42,17 @@ void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSepera
 	float z = -50;			// offset for z to see it in scene
 	// Make grid
 	for (int i = 0; i < rows; i++) {
-		float x = -5;		// initialize the start position of a vertex' x 
+		float x = -30;		// initialize the start position of a vertex' x 
 		for (int j = 0; j < cols; j++) {
-			vertices.push_back(x);
-			vertices.push_back(0);		// the y coordinate will be calculated in the shader
-			vertices.push_back(z);
-			// texture positions
-			vertices.push_back(1.0f / cols * j);
-			vertices.push_back(1 - i * 1.0f / rows);
-			x += _verticesSeperationDist;
+			unsigned char heightMapValue = (heightmap + (i + width * j) * bytePerPixel)[0];
+			Vertex vertex;
+			vertex.pos.x = x + i * 60.0f / width;
+			vertex.pos.z = z + j * 60.0f / height;
+			vertex.pos.y = heightMapValue / 255.0f * 10;
+			vertex.texturePos.x = (1.0f / cols * j);
+			vertex.texturePos.y = (1 - i * 1.0f / rows);
+			vertices.push_back(vertex);
 		}
-		z += _verticesSeperationDist;
 	}
 }
 
@@ -68,34 +69,4 @@ void Terrain::GenerateIndexData() {
 			indices.push_back(i * cols + j);
 		}
 	}
-}
-
-void Terrain::GetVertexHeight(const char* _imagePath, float _heightmapSizeMult, float _verticesSeperationDist)
-{
-	// Load texture
-	unsigned int textureID;
-	int textureWidth, textureHeight;
-	unsigned char* texturePixels = stbi_load(_imagePath, &textureWidth, &textureHeight, NULL, STBI_rgb_alpha);
-
-	// Generate and bind texture
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	// Set parameters and allocate storage
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texturePixels);
-
-	// Read pixel
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &textureWidth);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &textureHeight);
-	
-	for (int i = 0; i < textureWidth * textureHeight * 4; i += 4) {
-		Pixel pixel;
-		pixel.pos = float2(i / 4 % textureWidth, i / 4 / textureWidth);
-		pixel.R = static_cast<int>(texturePixels[i]);
-		pixel.G = static_cast<int>(texturePixels[i + 1]);
-		pixel.B = static_cast<int>(texturePixels[i + 2]);
-		pixel.A = static_cast<int>(texturePixels[i + 3]);
-		pixels.push_back(pixel);
-	}
-	stbi_image_free(texturePixels);
 }

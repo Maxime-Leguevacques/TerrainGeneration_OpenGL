@@ -8,7 +8,13 @@
 struct Pixel
 {
 	float2 pos;
-	int R, G, B, A;
+	int R;
+};
+
+struct Vertex
+{
+	float3 pos;
+	float2 texturePos;
 };
 
 
@@ -19,7 +25,7 @@ private:
 	std::vector<Pixel> pixels;
 
 public:
-	std::vector<float> vertices;
+	std::vector<Vertex> vertices;
 	std::vector<int> indices;
 	int rows, cols;
 
@@ -32,5 +38,4 @@ public:
 	void SetHeightmap(const char* _imagePath);
 	void GenerateVertexData(float _heightmapSizeMult, float _verticesSeperationDist = 0.1f);
 	void GenerateIndexData();
-	void GetVertexHeight(const char* _imagePath, float _heightmapSizeMult, float _verticesSeperationDist = 0.1f);
 };

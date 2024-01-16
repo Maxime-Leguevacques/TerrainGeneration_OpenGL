@@ -136,7 +136,7 @@ void Renderer::InitWindow()
 void Renderer::RenderWindow()
 {
     Terrain* map1 = new Terrain("assets/heightmap.png");
-    map1->GenerateVertexData(0.4f);
+    map1->GenerateVertexData(1.0f);
     map1->GenerateIndexData();
 
     Camera* camera = Camera::GetInstance();
@@ -151,13 +151,13 @@ void Renderer::RenderWindow()
     glBindVertexArray(mapVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, mapVBO);
-    glBufferData(GL_ARRAY_BUFFER, map1->vertices.size() * sizeof(float), map1->vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, map1->vertices.size() * sizeof(Vertex), map1->vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mapEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, map1->indices.size() * sizeof(unsigned int), map1->indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, map1->indices.size() * sizeof(int), map1->indices.data(), GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));

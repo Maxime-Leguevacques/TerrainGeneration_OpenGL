@@ -15,7 +15,7 @@ out vec3 n_p;
 void main()
 {
     float height = texture(dep, texcoord).r;
-	vec3 new_pos = vec3(position.x, height*heightMult, position.z);
+	vec3 new_pos = vec3(position.x, position.y, position.z);
 	gl_Position = projection * view * model * vec4(new_pos, 1.0f);
 	n_p = new_pos;
 	coord = texcoord;
