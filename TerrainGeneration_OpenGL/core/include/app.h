@@ -8,11 +8,15 @@
 class App
 {
 private:
-	App();
 	float defaultWindowWidth;
 	float defaultWindowHeight;
 
 public:
+	bool fpsView = false;
+
+public:
+	App();
+
 	static App* GetInstance();
 
 	float GetWindowWidth();

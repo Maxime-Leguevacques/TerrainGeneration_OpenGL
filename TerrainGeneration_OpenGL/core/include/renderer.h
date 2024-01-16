@@ -4,13 +4,19 @@
 #include <GLFW/glfw3.h>
 #include "app.h"
 #include "camera.h"
+#include "terrain.h"
+#include "skybox.h"
 
 class Renderer
 {
 private:
 	Renderer();
 	GLFWwindow* window;
+	unsigned int mapVAO, mapVBO, mapEBO;
+	Terrain* map = new Terrain("assets/heightmap.png");
+
 public:
+	Skybox* skybox;
 	App* app;
 	Camera* camera;
 	static Renderer* GetInstance();
@@ -22,6 +28,7 @@ public:
 	void InitImGui(GLFWwindow* _window);
 	void RenderImGui();
 	void CleanImGui();
+	void RenderMap();
 
 	float deltaTime;
 	float lastFrame;

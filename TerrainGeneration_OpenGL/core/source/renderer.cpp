@@ -16,8 +16,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 float lastX = (float)1920 / 2.0;
 float lastY = (float)1080 / 2.0;
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 unsigned int loadTexture(char const* path);
@@ -26,85 +28,12 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 
-float skyboxVertices[] = {
-    // positions          
-    -1.0f,  1.0f, -1.0f,
-    -1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-    -1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f
-};
-
-unsigned int loadCubemap(std::vector<std::string> faces)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            stbi_image_free(data);
-        }
-        else
-        {
-            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-            stbi_image_free(data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    return textureID;
-}
 
 Renderer::Renderer()
     : deltaTime(0.0f),lastFrame(0.0f),
     app(App::GetInstance()), camera(Camera::GetInstance())
 {
+    skybox = new Skybox();
 }
 
 Renderer* Renderer::GetInstance()
@@ -125,36 +54,29 @@ void Renderer::InitWindow()
 #endif
 
     window = glfwCreateWindow(app->GetWindowWidth(), app->GetWindowHeight(), "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
     }
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
 
     glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::RenderWindow()
+void Renderer::RenderMap()
 {
-    Terrain* map1 = new Terrain("assets/heightmap.png");
-    map1->GenerateVertexData(0.4f);
-    map1->GenerateIndexData();
+    map->GenerateVertexData(0.4f);
+    map->GenerateIndexData();
 
     #pragma region Map VAO VBO EBO
     //=====================================Load map VAO VBO EBO===================================
-    unsigned int mapVBO, mapVAO, mapEBO;
+    //unsigned int mapVBO, mapVAO, mapEBO;
     glGenVertexArrays(1, &mapVAO);
     glGenBuffers(1, &mapVBO);
     glGenBuffers(1, &mapEBO);
@@ -162,10 +84,10 @@ void Renderer::RenderWindow()
     glBindVertexArray(mapVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, mapVBO);
-    glBufferData(GL_ARRAY_BUFFER, map1->vertices.size() * sizeof(Vertex), map1->vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, map->vertices.size() * sizeof(Vertex), map->vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mapEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, map1->indices.size() * sizeof(int), map1->indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, map->indices.size() * sizeof(int), map->indices.data(), GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
@@ -175,7 +97,10 @@ void Renderer::RenderWindow()
     glEnableVertexAttribArray(1);
     //=====================================Load map VAO VBO EBO===================================
     #pragma endregion Map VAO VBO EBO
+}
 
+void Renderer::RenderWindow()
+{
     #pragma region Skybox VAO VBO EBO
     //=====================================Load Skybox VAO VBO EBO================================
     unsigned int skyboxVAO, skyboxVBO;
@@ -183,7 +108,7 @@ void Renderer::RenderWindow()
     glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skybox->skyboxVertices), &skybox->skyboxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     //================================s=====Load Skybox VAO VBO EBO================================
@@ -213,7 +138,7 @@ void Renderer::RenderWindow()
        "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
     };
 
-    unsigned int cubemapTexture = loadCubemap(faces);
+    unsigned int cubemapTexture = skybox->LoadSkybox(faces);
 
     shader.Use();
 
@@ -231,6 +156,20 @@ void Renderer::RenderWindow()
 
     while (!glfwWindowShouldClose(window))
     {
+        // mouse callback
+        if (ImGui::IsKeyPressed(ImGuiKey_C, false)) {
+            app->fpsView = !app->fpsView;
+
+            if (app->fpsView) {
+                glfwSetCursorPosCallback(window, mouse_callback);
+                glfwSetScrollCallback(window, scroll_callback);
+            }
+            else {
+                glfwSetCursorPosCallback(window, ImGui_ImplGlfw_CursorPosCallback);
+                glfwSetScrollCallback(window, ImGui_ImplGlfw_ScrollCallback);
+            }
+        }
+
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -261,7 +200,7 @@ void Renderer::RenderWindow()
         glBindVertexArray(mapVAO);
         //Model = glm::translate(Model, glm::vec3(horizontalPos, upPos, depth));
         
-        glDrawElements(GL_TRIANGLES, (map1->rows - 1) * (map1->cols - 1) * 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, (map->rows - 1) * (map->cols - 1) * 6, GL_UNSIGNED_INT, 0);
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
@@ -318,6 +257,10 @@ void Renderer::RenderImGui()
     ImGui::SliderFloat("Depth", &depth, -100.0f, 100.0f, "%.f", 0);
     ImGui::SliderFloat("Vertical", &upPos, -100.0f, 100.0f, "%.f", 0);
     ImGui::SliderFloat("Horizontal", &horizontalPos, -100.0f, 100.0f, "%.f", 0);
+    if (ImGui::Button("Reload map")) {
+        RenderMap();
+    }
+
 
     ImGui::End();
     ImGui::Render();
@@ -347,9 +290,9 @@ void Renderer::processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera->ProcessKeyboard(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        camera->ProcessKeyboard(UP, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         camera->ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        camera->ProcessKeyboard(UP, deltaTime);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

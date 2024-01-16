@@ -145,12 +145,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\include\skybox.h" />
     <ClCompile Include="core\source\app.cpp" />
     <ClCompile Include="core\source\camera.cpp" />
     <ClCompile Include="core\source\main.cpp" />
     <ClCompile Include="core\source\renderer.cpp" />
     <ClCompile Include="core\source\resourceManager.cpp" />
     <ClCompile Include="core\source\shader.cpp" />
+    <ClCompile Include="core\source\skybox.cpp" />
     <ClCompile Include="core\source\terrain.cpp" />
     <ClCompile Include="core\source\texture.cpp" />
     <ClCompile Include="externals\glad.c" />
