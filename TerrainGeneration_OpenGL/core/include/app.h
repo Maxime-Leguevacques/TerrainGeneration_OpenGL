@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 
+
 class App
 {
 private:
@@ -16,9 +17,6 @@ public:
 
 	float GetWindowWidth();
 	float GetWindowHeight();
-};
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
-unsigned int loadTexture(char const* path);
+};
 
