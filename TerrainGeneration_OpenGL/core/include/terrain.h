@@ -35,7 +35,6 @@ public:
 
 	Terrain(const char* _imagePath);
 
-	void SetHeightmap(const char* _imagePath);
 	void GenerateVertexData(float _heightmapSizeMult, float _verticesSeperationDist = 0.1f);
 	void GenerateIndexData();
 };

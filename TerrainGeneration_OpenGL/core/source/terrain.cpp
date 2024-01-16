@@ -2,7 +2,6 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-//#include <gl/GLU.h>
 
 #include "terrain.h"
 
@@ -21,11 +20,6 @@ Terrain::~Terrain()
 Terrain::Terrain(const char* _imagePath)
 {
 	heightmap = stbi_load(_imagePath, &width, &height, &nChannel, STBI_grey);
-}
-
-void Terrain::SetHeightmap(const char* _imagePath)
-{
-	heightmap = stbi_load(_imagePath, &width, &height, &nChannel, 0);
 }
 
 void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSeperationDist)
@@ -48,7 +42,7 @@ void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSepera
 			Vertex vertex;
 			vertex.pos.x = x + i * 60.0f / width;
 			vertex.pos.z = z + j * 60.0f / height;
-			vertex.pos.y = heightMapValue / 255.0f * 10;
+			vertex.pos.y = heightMapValue / 255.0f * 5;
 			vertex.texturePos.x = (1.0f / cols * j);
 			vertex.texturePos.y = (1 - i * 1.0f / rows);
 			vertices.push_back(vertex);

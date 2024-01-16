@@ -186,8 +186,8 @@ void Renderer::RenderWindow()
     Texture* T2 = new Texture(texture2);
 
     mapTex->LoadTexture("assets/heightmap.png");
-    T1->LoadTexture("assets/rock.jpg");
-    T2->LoadTexture("assets/water.jpg");
+    T1->LoadTexture("assets/green.jpg");
+    T2->LoadTexture("assets/brown.jpg");
 
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
     Shader skyboxShader("assets/shaders/skybox.vs", "assets/shaders/skybox.fs");
@@ -209,6 +209,8 @@ void Renderer::RenderWindow()
     shader.SetInt("dep", 0);
     shader.SetInt("tex1", 1);
     shader.SetInt("tex2", 2);
+    shader.SetInt("blendMode", 1);
+    shader.SetFloat("textureSeperationHeight", 1.0f);
     shader.SetFloat("heightMult", 4.0f);
 
     skyboxShader.Use();
