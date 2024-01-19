@@ -20,13 +20,21 @@
 float lastX = (float)1920 / 2.0;
 float lastY = (float)1080 / 2.0;
 
+std::vector<std::string> faces
+{
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/right.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/left.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/top.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/bottom.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/front.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
+};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 unsigned int loadTexture(char const* path);
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
 
 
 Renderer::Renderer()
@@ -118,7 +126,6 @@ void Renderer::RenderWindow()
     unsigned int dep = 0, texture1 = 0, texture2 = 0, texture3 = 0;
 
     Texture* mapTex = new Texture(dep);
-
     Texture* T1 = new Texture(texture1);
     Texture* T2 = new Texture(texture2);
 
@@ -128,21 +135,9 @@ void Renderer::RenderWindow()
 
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
     Shader skyboxShader("assets/shaders/skybox.vs", "assets/shaders/skybox.fs");
-
-    std::vector<std::string> faces
-    {
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/right.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/left.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/top.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/bottom.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/front.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
-    };
-
     unsigned int cubemapTexture = skybox->LoadSkybox(faces);
 
     shader.Use();
-
     shader.SetInt("dep", 0);
     shader.SetInt("tex1", 1);
     shader.SetInt("tex2", 2);
@@ -241,7 +236,6 @@ void Renderer::InitImGui(GLFWwindow* _window)
 {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(_window, true);
     ImGui_ImplOpenGL3_Init("#version 460");
@@ -291,7 +285,6 @@ void Renderer::processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera->ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -330,7 +323,6 @@ unsigned int loadTexture(char const* path)
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -354,8 +346,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     Renderer* renderer = Renderer::GetInstance();
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
-    if (firstMouse)
-    {
+    if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
@@ -363,7 +354,6 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
     float xoffset = xpos - lastX;
     float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
     lastX = xpos;
     lastY = ypos;
     renderer->camera->ProcessMouseMovement(xoffset, yoffset);
@@ -374,4 +364,3 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     Renderer* renderer = Renderer::GetInstance();
     renderer->camera->ProcessMouseScroll(static_cast<float>(yoffset));
 }
-
