@@ -151,7 +151,7 @@ void Renderer::RenderWindow()
     Model bagModel("C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/backpack/backpack.obj");
 
     InitImGui(window);
-
+    float t = 0;
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -222,10 +222,12 @@ void Renderer::RenderWindow()
         bagShader.SetMat4("projection", projection);
         bagShader.SetMat4("view", view);
 
+        t += 1.0f;
         // render the loaded model
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	
+        //model = glm::rotate(model, glm::radians(t), glm::vec3(0.0f, 1.0f, 0.0f));
         bagShader.SetMat4("model", model);
         bagModel.Draw(bagShader);
 
