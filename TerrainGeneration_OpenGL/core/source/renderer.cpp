@@ -36,6 +36,11 @@ Renderer::Renderer()
     skybox = new Skybox();
 }
 
+Renderer::~Renderer()
+{
+}
+
+
 Renderer* Renderer::GetInstance()
 {
     static Renderer* instance = new Renderer();
@@ -74,9 +79,7 @@ void Renderer::RenderMap()
     map->GenerateVertexData(0.4f);
     map->GenerateIndexData();
 
-    #pragma region Map VAO VBO EBO
     //=====================================Load map VAO VBO EBO===================================
-    //unsigned int mapVBO, mapVAO, mapEBO;
     glGenVertexArrays(1, &mapVAO);
     glGenBuffers(1, &mapVBO);
     glGenBuffers(1, &mapEBO);
@@ -95,8 +98,6 @@ void Renderer::RenderMap()
     // color attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    //=====================================Load map VAO VBO EBO===================================
-    #pragma endregion Map VAO VBO EBO
 }
 
 void Renderer::RenderWindow()
@@ -156,30 +157,31 @@ void Renderer::RenderWindow()
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         // mouse callback
         if (ImGui::IsKeyPressed(ImGuiKey_C, false)) {
             app->fpsView = !app->fpsView;
+            double lastMouseX, lastMouseY;
 
             if (app->fpsView) {
                 glfwSetCursorPosCallback(window, mouse_callback);
                 glfwSetScrollCallback(window, scroll_callback);
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             }
             else {
                 glfwSetCursorPosCallback(window, ImGui_ImplGlfw_CursorPosCallback);
-                glfwSetScrollCallback(window, ImGui_ImplGlfw_ScrollCallback);
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }
 
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        shader.Use();
+        
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mapTex->GetTextureName());
         glActiveTexture(GL_TEXTURE1);
@@ -187,22 +189,19 @@ void Renderer::RenderWindow()
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, T2->GetTextureName());
 
+        // Set matrices and pass them to the shader
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera->GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
-
-        // pass transformation matrices to the shader
         shader.SetMat4("model", model);
         shader.SetMat4("view", view);
         shader.SetMat4("projection", projection);
 
-        // render map
+        // Render map
         glBindVertexArray(mapVAO);
-        //Model = glm::translate(Model, glm::vec3(horizontalPos, upPos, depth));
-        
         glDrawElements(GL_TRIANGLES, (map->rows - 1) * (map->cols - 1) * 6, GL_UNSIGNED_INT, 0);
 
-        // draw skybox as last
+        // Draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
         skyboxShader.Use();
         view = glm::mat4(glm::mat3(camera->GetViewMatrix()));
@@ -210,7 +209,7 @@ void Renderer::RenderWindow()
         skyboxShader.SetMat4("view", view);
         skyboxShader.SetMat4("projection", projection);
 
-        // skybox cube
+        // Skybox cube
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
@@ -218,7 +217,8 @@ void Renderer::RenderWindow()
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
 
-        RenderImGui();
+        shader.Use();
+        RenderImGui(&shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -247,7 +247,7 @@ void Renderer::InitImGui(GLFWwindow* _window)
     ImGui_ImplOpenGL3_Init("#version 460");
 }
 
-void Renderer::RenderImGui()
+void Renderer::RenderImGui(Shader* _shader)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -257,10 +257,21 @@ void Renderer::RenderImGui()
     ImGui::SliderFloat("Depth", &depth, -100.0f, 100.0f, "%.f", 0);
     ImGui::SliderFloat("Vertical", &upPos, -100.0f, 100.0f, "%.f", 0);
     ImGui::SliderFloat("Horizontal", &horizontalPos, -100.0f, 100.0f, "%.f", 0);
-    if (ImGui::Button("Reload map")) {
+    if (ImGui::Button("Load map")) {
+        glDeleteVertexArrays(1, &mapVAO);
+        glDeleteBuffers(1, &mapVBO);
+        glDeleteBuffers(1, &mapEBO);
         RenderMap();
     }
-
+    ImGui::Text("Press 'c' to switch camera/cursor mode");
+    if (ImGui::Checkbox("blend mode", &app->blendMode)) {
+        if (app->blendMode) {
+            _shader->SetInt("blendMode", 0);
+        }
+        else {
+            _shader->SetInt("blendMode", 1);
+        }
+    }
 
     ImGui::End();
     ImGui::Render();

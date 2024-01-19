@@ -13,6 +13,7 @@ private:
 
 public:
 	bool fpsView = false;
+	bool blendMode = false;
 
 public:
 	App();
