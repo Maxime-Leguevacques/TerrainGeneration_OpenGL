@@ -69,7 +69,14 @@
     <ClCompile Include="core\source\texture.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="core\source\mesh.cpp">
+=======
+    <ClCompile Include="core\include\skybox.h">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="core\source\skybox.cpp">
+>>>>>>> 8251c3c561c13af4537557521605bdd3330b72f3
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

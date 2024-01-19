@@ -8,11 +8,16 @@
 class App
 {
 private:
-	App();
 	float defaultWindowWidth;
 	float defaultWindowHeight;
 
 public:
+	bool fpsView = false;
+	bool blendMode = false;
+
+public:
+	App();
+
 	static App* GetInstance();
 
 	float GetWindowWidth();

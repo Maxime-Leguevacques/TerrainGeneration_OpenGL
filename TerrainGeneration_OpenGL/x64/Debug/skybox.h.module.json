@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "x64\\Debug\\skybox.h.obj",
+            "outputs": [
+                "C:\\dev\\GitHub\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\vc143.pdb",
+                "x64\\Debug\\",
+                "C:\\dev\\GitHub\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\skybox.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "core\\include\\skybox.h",
+                    "source-path": "c:\\dev\\github\\terraingeneration_opengl\\terraingeneration_opengl\\core\\include\\skybox.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}
