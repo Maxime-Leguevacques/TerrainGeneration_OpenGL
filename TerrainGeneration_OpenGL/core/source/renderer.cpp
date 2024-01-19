@@ -23,12 +23,12 @@ float lastY = (float)1080 / 2.0;
 
 std::vector<std::string> faces
 {
-   "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/right.jpg",
-   "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/left.jpg",
-   "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/top.jpg",
-   "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/bottom.jpg",
-   "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/front.jpg",
-   "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/right.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/left.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/top.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/bottom.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/front.jpg",
+   "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -120,7 +120,6 @@ void Renderer::RenderWindow()
     glBufferData(GL_ARRAY_BUFFER, sizeof(skybox->skyboxVertices), &skybox->skyboxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    //=====================================Load Skybox VAO VBO EBO================================
 
     unsigned int dep = 0, texture1 = 0, texture2 = 0, texture3 = 0;
 
@@ -149,8 +148,7 @@ void Renderer::RenderWindow()
 
     stbi_set_flip_vertically_on_load(true);
     Shader bagShader("assets/shaders/v_loadModel.vs", "assets/shaders/f_loadModel.fs");
-
-    Model bagModel("C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/rock/rock.obj");
+    Model bagModel("C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/backpack/backpack.obj");
 
     InitImGui(window);
     float t = 0;

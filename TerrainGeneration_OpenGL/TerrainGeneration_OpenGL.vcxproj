@@ -150,6 +150,7 @@
     <ClCompile Include="core\source\camera.cpp" />
     <ClCompile Include="core\source\main.cpp" />
     <ClCompile Include="core\source\mesh.cpp" />
+    <ClCompile Include="core\source\model.cpp" />
     <ClCompile Include="core\source\renderer.cpp" />
     <ClCompile Include="core\source\resourceManager.cpp" />
     <ClCompile Include="core\source\shader.cpp" />
