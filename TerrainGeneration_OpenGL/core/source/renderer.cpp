@@ -6,6 +6,7 @@
 #include "shader.h"
 #include "camera.h"
 #include "texture.h"
+#include "model.h"
 #include "stb_image.h"
 
 #include "imgui/imgui.h"
@@ -148,6 +149,7 @@ void Renderer::InitWindow()
 
 void Renderer::RenderWindow()
 {
+
     Terrain* map1 = new Terrain("assets/heightmap.png");
     map1->GenerateVertexData(0.4f);
     map1->GenerateIndexData();
@@ -162,13 +164,13 @@ void Renderer::RenderWindow()
     glBindVertexArray(mapVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, mapVBO);
-    glBufferData(GL_ARRAY_BUFFER, map1->vertices.size() * sizeof(Vertex), map1->vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, map1->vertices.size() * sizeof(t_Vertex), map1->vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mapEBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, map1->indices.size() * sizeof(int), map1->indices.data(), GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(t_Vertex), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -203,14 +205,15 @@ void Renderer::RenderWindow()
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
     Shader skyboxShader("assets/shaders/skybox.vs", "assets/shaders/skybox.fs");
 
+
     std::vector<std::string> faces
     {
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/right.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/left.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/top.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/bottom.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/front.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
+       "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/right.jpg",
+       "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/left.jpg",
+       "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/top.jpg",
+       "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/bottom.jpg",
+       "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/front.jpg",
+       "C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
     };
 
     unsigned int cubemapTexture = loadCubemap(faces);
@@ -226,6 +229,11 @@ void Renderer::RenderWindow()
 
     skyboxShader.Use();
     skyboxShader.SetInt("skybox", 0);
+
+    stbi_set_flip_vertically_on_load(true);
+    Shader bagShader("assets/shaders/v_loadModel.vs", "assets/shaders/f_loadModel.fs");
+
+    Model bagModel("C:/dev/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/tree/Hornbeam Tree.obj");
 
     InitImGui(window);
 
@@ -278,6 +286,21 @@ void Renderer::RenderWindow()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
+
+        bagShader.Use();
+
+        // view/projection transformations
+        projection = glm::perspective(glm::radians(camera->Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+        view = camera->GetViewMatrix();
+        bagShader.SetMat4("projection", projection);
+        bagShader.SetMat4("view", view);
+
+        // render the loaded model
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
+        bagShader.SetMat4("model", model);
+        bagModel.Draw(bagShader);
 
         RenderImGui();
 

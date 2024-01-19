@@ -39,7 +39,7 @@ void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSepera
 		float x = -30;		// initialize the start position of a vertex' x 
 		for (int j = 0; j < cols; j++) {
 			unsigned char heightMapValue = (heightmap + (i + width * j) * bytePerPixel)[0];
-			Vertex vertex;
+			t_Vertex vertex;
 			vertex.pos.x = x + i * 60.0f / width;
 			vertex.pos.z = z + j * 60.0f / height;
 			vertex.pos.y = heightMapValue / 255.0f * 5;

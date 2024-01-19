@@ -69,6 +69,9 @@
     <ClCompile Include="core\source\texture.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="core\source\mesh.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\include\imgui\imconfig.h">
@@ -1229,6 +1232,12 @@
     <ClInclude Include="core\include\texture.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="core\include\mesh.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\model.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\v_shader.vs" />
@@ -1668,5 +1677,7 @@
     </None>
     <None Include="assets\shaders\skybox.fs" />
     <None Include="assets\shaders\skybox.vs" />
+    <None Include="assets\shaders\v_loadModel.vs" />
+    <None Include="assets\shaders\f_loadModel.fs" />
   </ItemGroup>
 </Project>

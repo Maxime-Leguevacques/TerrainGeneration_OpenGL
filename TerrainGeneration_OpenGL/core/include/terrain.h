@@ -11,7 +11,7 @@ struct Pixel
 	int R;
 };
 
-struct Vertex
+struct t_Vertex
 {
 	float3 pos;
 	float2 texturePos;
@@ -25,7 +25,7 @@ private:
 	std::vector<Pixel> pixels;
 
 public:
-	std::vector<Vertex> vertices;
+	std::vector<t_Vertex> vertices;
 	std::vector<int> indices;
 	int rows, cols;
 
