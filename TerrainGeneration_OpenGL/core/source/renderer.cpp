@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 
 #include "renderer.h"
 #include "app.h"
@@ -15,6 +16,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+namespace fs = std::filesystem;
 
 
 float lastX = (float)1920 / 2.0;
@@ -99,6 +101,17 @@ void Renderer::RenderMap()
     #pragma endregion Map VAO VBO EBO
 }
 
+std::string findFile(const std::string& pFile) {
+    std::string targetFileName;
+    for (fs::path file : fs::recursive_directory_iterator(fs::current_path()))
+        if (file.filename().string().find(pFile) != std::string::npos)
+        {
+            targetFileName = file.string();
+            std::cout << targetFileName.c_str() << std::endl;
+            return targetFileName;
+        }
+}
+
 void Renderer::RenderWindow()
 {
     #pragma region Skybox VAO VBO EBO
@@ -128,14 +141,21 @@ void Renderer::RenderWindow()
     Shader shader("assets/shaders/v_shader.vs", "assets/shaders/f_shader.fs");
     Shader skyboxShader("assets/shaders/skybox.vs", "assets/shaders/skybox.fs");
 
+    std::string skyboxRight = findFile("right.jpg");
+    std::string skyboxLeft = findFile("left.jpg");
+    std::string skyboxTop = findFile("top.jpg");
+    std::string skyboxBottom = findFile("bottom.jpg");
+    std::string skyboxFront = findFile("front.jpg");
+    std::string skyboxBack = findFile("back.jpg");
+
     std::vector<std::string> faces
     {
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/right.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/left.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/top.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/bottom.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/front.jpg",
-       "C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/skybox/back.jpg"
+       skyboxRight,
+       skyboxLeft,
+       skyboxTop,
+       skyboxBottom,
+       skyboxFront,
+       skyboxBack
     };
 
     unsigned int cubemapTexture = skybox->LoadSkybox(faces);
@@ -260,7 +280,6 @@ void Renderer::RenderImGui()
     if (ImGui::Button("Reload map")) {
         RenderMap();
     }
-
 
     ImGui::End();
     ImGui::Render();

@@ -15,6 +15,7 @@ Texture::Texture(unsigned int _texName)
 void Texture::LoadTexture(const char* _path)
 {
     std::string filePath(_path);
+    std::cout << filePath << std::endl;
     std::string extension = filePath.substr(filePath.find_last_of(".") + 1);
 
     int width, height, nrChannels;
