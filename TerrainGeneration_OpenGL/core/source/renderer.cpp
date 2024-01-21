@@ -1,5 +1,6 @@
 #include <iostream>
 #include <filesystem>
+#include <random>
 
 #include "renderer.h"
 #include "app.h"
@@ -33,7 +34,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 Renderer::Renderer()
     : deltaTime(0.0f),lastFrame(0.0f),
-    app(App::GetInstance()), camera(Camera::GetInstance())
+    app(App::GetInstance()), camera(Camera::GetInstance()),
+    rockNums(10)
 {
     skybox = new Skybox();
 }
@@ -113,6 +115,13 @@ std::string findFile(const std::string& pFile) {
         }
 }
 
+int getRandomNumber(int min, int max) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> distribution(min, max);
+    return distribution(gen);
+}
+
 void Renderer::RenderWindow()
 {
     //=====================================Load Skybox VAO VBO EBO================================
@@ -131,7 +140,7 @@ void Renderer::RenderWindow()
     Texture* T1 = new Texture(texture1);
     Texture* T2 = new Texture(texture2);
 
-    mapTex->LoadTexture("assets/heightmap.png");
+    mapTex->LoadTexture("assets/iceland_heightmap.png");
     T1->LoadTexture("assets/green.jpg");
     T2->LoadTexture("assets/brown.jpg");
 
@@ -175,6 +184,13 @@ void Renderer::RenderWindow()
 
     InitImGui(window);
     float t = 0;
+    RenderMap();
+    for (int i = 0; i < rockNums; i++)
+    {
+        int randomPos = getRandomNumber(0, map->vertices.size());
+        rockPositions.push_back(randomPos);
+    }
+
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -211,7 +227,7 @@ void Renderer::RenderWindow()
 
         // Set matrices and pass them to the shader
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(20,-3,30));
+        //model = glm::translate(model, glm::vec3(20,-3,30));
         glm::mat4 view = camera->GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
         shader.SetMat4("model", model);
@@ -248,12 +264,17 @@ void Renderer::RenderWindow()
 
         t += 1.0f;
         // render the loaded model
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
-        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	
-        //model = glm::rotate(model, glm::radians(t), glm::vec3(0.0f, 1.0f, 0.0f));
-        bagShader.SetMat4("model", model);
-        bagModel.Draw(bagShader);
+
+        glm::mat4 model2 = glm::mat4(1.0f);
+        for (int i = 0; i < rockNums; i++)
+        {
+            model2 = glm::mat4(1.0f);
+            model2 = glm::translate(model2, glm::vec3(map->vertices[rockPositions[i]].pos.x, map->vertices[rockPositions[i]].pos.y, map->vertices[rockPositions[i]].pos.z));
+            model2 = glm::scale(model2, glm::vec3(0.1f, 0.1f, 0.1f));
+            //model2 = glm::rotate(model2, glm::radians(t), glm::vec3(0.0f, 1.0f, 0.0f));
+            bagShader.SetMat4("model", model2);
+            bagModel.Draw(bagShader);
+        }
 
         shader.Use();
         RenderImGui(&shader);
@@ -262,6 +283,7 @@ void Renderer::RenderWindow()
         glfwPollEvents();
     }
 
+    rockPositions.clear();
     glDeleteVertexArrays(1, &mapVAO);
     glDeleteBuffers(1, &mapVBO);
     glDeleteBuffers(1, &mapEBO);
@@ -300,6 +322,12 @@ void Renderer::RenderImGui(Shader* _shader)
         glDeleteBuffers(1, &mapEBO);
         RenderMap();
     }
+
+    if (ImGui::Button("Add a rock")) {
+        rockNums++;
+        rockPositions.push_back(getRandomNumber(0, map->vertices.size()));
+    }
+
     ImGui::Text("Press 'c' to switch camera/cursor mode");
     if (ImGui::Checkbox("blend mode", &app->blendMode)) {
         if (app->blendMode) {
