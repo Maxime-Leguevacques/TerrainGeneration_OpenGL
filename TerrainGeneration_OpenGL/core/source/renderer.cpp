@@ -102,6 +102,9 @@ void Renderer::RenderMap()
     // color attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    std::cout << "highest y : " << map->highestPoint << "/nlowest y : " << map->lowestPoint << std::endl;
+
 }
 
 std::string findFile(const std::string& pFile) {
@@ -173,7 +176,7 @@ void Renderer::RenderWindow()
     shader.SetInt("blendMode", 1);
     shader.SetFloat("textureSeperationHeight", 2.0f);
     shader.SetFloat("heightMult", 4.0f);
-
+    
     skyboxShader.Use();
     skyboxShader.SetInt("skybox", 0);
 
@@ -321,6 +324,7 @@ void Renderer::RenderImGui(Shader* _shader)
         glDeleteBuffers(1, &mapVBO);
         glDeleteBuffers(1, &mapEBO);
         RenderMap();
+        _shader->SetFloat("maxHeight", map->highestPoint);
     }
 
     if (ImGui::Button("Add a rock")) {

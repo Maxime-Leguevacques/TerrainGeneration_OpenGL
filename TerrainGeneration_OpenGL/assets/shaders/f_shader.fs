@@ -7,6 +7,7 @@ in vec2 coord;
 in vec3 n_p;
 in float TSH;
 flat in int mode;
+in float highestY;
 
 
 
@@ -15,14 +16,11 @@ void main()
     vec2 uv = coord*10;
 
     if (mode == 0) {
-        if(n_p.y > TSH) {
-            FragColor = texture(tex1, uv);
-        }
-        else {
-            float alpha = n_p.y / TSH;
-            float weightTex1 = 0.7;
-            FragColor = texture(tex1, uv) * (alpha * weightTex1) + texture(tex2, uv) * (1.0 - alpha * weightTex1);
-        }
+        float alpha = n_p.y / highestY;
+        float weightTex1 = 0.7;
+        vec4 w1 = texture(tex1, uv) * alpha;
+        vec4 w2 = texture(tex2, uv) * (1 - alpha);
+        FragColor = w1 + w2;
     }
     else if (mode == 1) {
 
