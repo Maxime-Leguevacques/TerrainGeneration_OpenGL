@@ -28,6 +28,7 @@ public:
 	std::vector<t_Vertex> vertices;
 	std::vector<int> indices;
 	int rows, cols;
+	float lowestPoint = 0, highestPoint = 0;
 
 public:
 	Terrain();

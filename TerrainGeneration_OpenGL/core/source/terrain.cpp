@@ -43,6 +43,9 @@ void Terrain::GenerateVertexData(float _heightmapSizeMult, float _verticesSepera
 			vertex.pos.x = x + i * 60.0f / width;
 			vertex.pos.z = z + j * 60.0f / height;
 			vertex.pos.y = heightMapValue / 255.0f * 5;
+			if (vertex.pos.y > highestPoint) {			// store highest point
+				highestPoint = vertex.pos.y;
+			}
 			vertex.texturePos.x = (1.0f / cols * j);
 			vertex.texturePos.y = (1 - i * 1.0f / rows);
 			vertices.push_back(vertex);

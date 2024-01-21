@@ -5,24 +5,14 @@
         {
             "primary-output": "x64\\Debug\\skybox.h.obj",
             "outputs": [
-<<<<<<< HEAD
-                "E:\\Projects\\GitHub\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\vc143.pdb",
+                "C:\\Users\\Maxim\\Dev\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\vc143.pdb",
                 "x64\\Debug\\",
-                "E:\\Projects\\GitHub\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\skybox.h.ifc"
-=======
-                "C:\\dev\\GitHub\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\vc143.pdb",
-                "x64\\Debug\\",
-                "C:\\dev\\GitHub\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\skybox.h.ifc"
->>>>>>> 49435d2d986325c3ee4d84ccf161c8ab25a6f202
+                "C:\\Users\\Maxim\\Dev\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\skybox.h.ifc"
             ],
             "provides": [
                 {
                     "logical-name": "core\\include\\skybox.h",
-<<<<<<< HEAD
-                    "source-path": "e:\\projects\\github\\terraingeneration_opengl\\terraingeneration_opengl\\core\\include\\skybox.h",
-=======
-                    "source-path": "c:\\dev\\github\\terraingeneration_opengl\\terraingeneration_opengl\\core\\include\\skybox.h",
->>>>>>> 49435d2d986325c3ee4d84ccf161c8ab25a6f202
+                    "source-path": "c:\\users\\maxim\\dev\\terraingeneration_opengl\\terraingeneration_opengl\\core\\include\\skybox.h",
                     "lookup-method": "absolute"
                 }
             ],

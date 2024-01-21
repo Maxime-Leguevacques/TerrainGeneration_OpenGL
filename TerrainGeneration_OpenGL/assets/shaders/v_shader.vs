@@ -9,6 +9,7 @@ uniform sampler2D dep;
 uniform sampler2D tex1;
 uniform sampler2D tex2;
 uniform float textureSeperationHeight;
+uniform float maxHeight;
 uniform int blendMode;
 uniform float heightMult;
 
@@ -16,6 +17,7 @@ out vec2 coord;
 out vec3 n_p;
 out float TSH;
 flat out int mode;
+out float highestY;
 
 
 
@@ -27,4 +29,5 @@ void main()
 	coord = texcoord;
 	TSH = textureSeperationHeight;
 	mode = blendMode;
+	highestY = maxHeight;
 }
