@@ -25,7 +25,6 @@ void Shader::CheckCompileErrors(unsigned int _shader, std::string _type)
 
 Shader::Shader(const char* _vertexPath, const char* _fragmentPath)
 {
-	/* 1. Retrieve the vertex/fragment source code from _filePath */
 	std::string vertexCode, fragmentCode;
 	std::ifstream vShaderFile, fShaderFile;
 	// ensure ifstream objects throw exceptions

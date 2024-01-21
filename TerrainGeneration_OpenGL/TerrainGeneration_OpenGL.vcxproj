@@ -149,6 +149,8 @@
     <ClCompile Include="core\source\app.cpp" />
     <ClCompile Include="core\source\camera.cpp" />
     <ClCompile Include="core\source\main.cpp" />
+    <ClCompile Include="core\source\mesh.cpp" />
+    <ClCompile Include="core\source\model.cpp" />
     <ClCompile Include="core\source\renderer.cpp" />
     <ClCompile Include="core\source\resourceManager.cpp" />
     <ClCompile Include="core\source\shader.cpp" />
@@ -169,6 +171,8 @@
   <ItemGroup>
     <ClInclude Include="core\include\app.h" />
     <ClInclude Include="core\include\camera.h" />
+    <ClInclude Include="core\include\mesh.h" />
+    <ClInclude Include="core\include\model.h" />
     <ClInclude Include="core\include\renderer.h" />
     <ClInclude Include="core\include\resourceManager.h" />
     <ClInclude Include="core\include\shader.h" />
@@ -555,9 +559,11 @@
     <ClInclude Include="externals\include\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\f_loadModel.fs" />
     <None Include="assets\shaders\f_shader.fs" />
     <None Include="assets\shaders\skybox.fs" />
     <None Include="assets\shaders\skybox.vs" />
+    <None Include="assets\shaders\v_loadModel.vs" />
     <None Include="assets\shaders\v_shader.vs" />
     <None Include="assimp-vc143-mtd.dll" />
     <None Include="externals\include\assimp\color4.inl" />
