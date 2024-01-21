@@ -2,8 +2,6 @@
 
 #include "renderer.h"
 
-
-
 int main()
 {
     Renderer* renderer = Renderer::GetInstance();
