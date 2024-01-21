@@ -170,7 +170,8 @@ void Renderer::RenderWindow()
 
     stbi_set_flip_vertically_on_load(true);
     Shader bagShader("assets/shaders/v_loadModel.vs", "assets/shaders/f_loadModel.fs");
-    Model bagModel("C:/Users/m.leguevacques/Documents/Projects/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/backpack/backpack.obj");
+
+    Model bagModel("E:/Projects/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/rock/rock.obj");
 
     InitImGui(window);
     float t = 0;
@@ -210,6 +211,7 @@ void Renderer::RenderWindow()
 
         // Set matrices and pass them to the shader
         glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(20,-3,30));
         glm::mat4 view = camera->GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
         shader.SetMat4("model", model);
