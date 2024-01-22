@@ -566,5 +566,7 @@
     <None Include="externals\include\glm\gtx\vector_angle.inl" />
     <None Include="externals\include\glm\gtx\vector_query.inl" />
     <None Include="externals\include\glm\gtx\wrap.inl" />
+    <None Include="assets\shaders\f_loadModel2.fs" />
+    <None Include="assets\shaders\v_loadModel2.vs" />
   </ItemGroup>
 </Project>

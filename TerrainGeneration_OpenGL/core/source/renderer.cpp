@@ -181,13 +181,58 @@ void Renderer::RenderWindow()
     skyboxShader.SetInt("skybox", 0);
 
     stbi_set_flip_vertically_on_load(true);
-    Shader bagShader("assets/shaders/v_loadModel.vs", "assets/shaders/f_loadModel.fs");
+    //Shader bagShader("assets/shaders/v_loadModel.vs", "assets/shaders/f_loadModel.fs");
+    Shader rockShader("assets/shaders/v_loadModel2.vs", "assets/shaders/f_loadModel2.fs");
+    Model rockModel("E:/Projects/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/rock/rock.obj");
 
-    Model bagModel("E:/Projects/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/rock/rock.obj");
+    RenderMap();
+
+    unsigned int amount = 1000;
+    glm::mat4* modelMatrices;
+    modelMatrices = new glm::mat4[amount];
+
+    for (unsigned int i = 0; i < amount; i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+
+        model = glm::translate(model, glm::vec3(map->vertices[i].pos.x, map->vertices[i].pos.y, map->vertices[i].pos.z));
+
+        modelMatrices[i] = model;
+    }
+    // -------------------------
+    unsigned int buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+    
+    for (unsigned int i = 0; i < rockModel.meshes.size(); i++)
+    {
+        unsigned int VAO = rockModel.meshes[i].VAO;
+        glBindVertexArray(VAO);
+        // set attribute pointers for matrix (4 times vec4)
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+
+        glVertexAttribDivisor(3, 1);
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
+
+        glBindVertexArray(0);
+    }
+
+
+
+
 
     InitImGui(window);
-    float t = 0;
-    RenderMap();
+
     for (int i = 0; i < rockNums; i++)
     {
         int randomPos = getRandomNumber(0, map->vertices.size());
@@ -236,6 +281,10 @@ void Renderer::RenderWindow()
         shader.SetMat4("model", model);
         shader.SetMat4("view", view);
         shader.SetMat4("projection", projection);
+        rockShader.Use();
+        rockShader.SetMat4("projection", projection);
+        rockShader.SetMat4("view", view);
+        shader.Use();
 
         // Render map
         glBindVertexArray(mapVAO);
@@ -257,15 +306,14 @@ void Renderer::RenderWindow()
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
 
-        bagShader.Use();
+        //bagShader.Use();
 
         // view/projection transformations
-        projection = glm::perspective(glm::radians(camera->Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
-        view = camera->GetViewMatrix();
-        bagShader.SetMat4("projection", projection);
-        bagShader.SetMat4("view", view);
+        //projection = glm::perspective(glm::radians(camera->Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+        //view = camera->GetViewMatrix();
+        //bagShader.SetMat4("projection", projection);
+        //bagShader.SetMat4("view", view);
 
-        t += 1.0f;
         // render the loaded model
 
         glm::mat4 model2 = glm::mat4(1.0f);
@@ -275,10 +323,20 @@ void Renderer::RenderWindow()
             model2 = glm::translate(model2, glm::vec3(map->vertices[rockPositions[i]].pos.x, map->vertices[rockPositions[i]].pos.y, map->vertices[rockPositions[i]].pos.z));
             model2 = glm::scale(model2, glm::vec3(0.1f, 0.1f, 0.1f));
             //model2 = glm::rotate(model2, glm::radians(t), glm::vec3(0.0f, 1.0f, 0.0f));
-            bagShader.SetMat4("model", model2);
-            bagModel.Draw(bagShader);
+            rockShader.SetMat4("model", model2);
+            rockModel.Draw(rockShader);
         }
-
+        // draw meteorites
+        rockShader.Use();
+        rockShader.SetInt("texture_diffuse1", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, rockModel.textures_loaded[0].id); // note: we also made the textures_loaded vector public (instead of private) from the model class.
+        for (unsigned int i = 0; i < rockModel.meshes.size(); i++)
+        {
+            glBindVertexArray(rockModel.meshes[i].VAO);
+            glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(rockModel.meshes[i].indices.size()), GL_UNSIGNED_INT, 0, amount);
+            glBindVertexArray(0);
+        }
         shader.Use();
         RenderImGui(&shader);
 
