@@ -236,9 +236,6 @@ void Renderer::RenderWindow()
     }
 
 
-
-
-
     InitImGui(window);
 
     for (int i = 0; i < rockNums; i++)
@@ -313,14 +310,6 @@ void Renderer::RenderWindow()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
-
-        //bagShader.Use();
-
-        // view/projection transformations
-        //projection = glm::perspective(glm::radians(camera->Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
-        //view = camera->GetViewMatrix();
-        //bagShader.SetMat4("projection", projection);
-        //bagShader.SetMat4("view", view);
 
         // render the loaded model
 

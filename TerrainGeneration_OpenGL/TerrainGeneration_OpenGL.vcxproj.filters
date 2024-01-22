@@ -7,7 +7,6 @@
     <ClCompile Include="core\source\main.cpp" />
     <ClCompile Include="core\source\mesh.cpp" />
     <ClCompile Include="core\source\renderer.cpp" />
-    <ClCompile Include="core\source\resourceManager.cpp" />
     <ClCompile Include="core\source\shader.cpp" />
     <ClCompile Include="core\source\skybox.cpp" />
     <ClCompile Include="core\source\terrain.cpp" />
@@ -29,7 +28,6 @@
     <ClInclude Include="core\include\camera.h" />
     <ClInclude Include="core\include\mesh.h" />
     <ClInclude Include="core\include\renderer.h" />
-    <ClInclude Include="core\include\resourceManager.h" />
     <ClInclude Include="core\include\shader.h" />
     <ClInclude Include="core\include\terrain.h" />
     <ClInclude Include="core\include\texture.h" />
