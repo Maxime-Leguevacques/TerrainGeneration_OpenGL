@@ -8,8 +8,6 @@
 #include "skybox.h"
 #include "shader.h"
 
-
-
 class Renderer
 {
 private:

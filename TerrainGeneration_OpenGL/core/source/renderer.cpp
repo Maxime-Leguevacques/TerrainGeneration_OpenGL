@@ -114,7 +114,7 @@ std::string findFile(const std::string& pFile) {
         {
             targetFileName = file.string();
             std::cout << targetFileName.c_str() << std::endl;
-            return targetFileName;
+            return targetFileName.c_str();
         }
 }
 
@@ -183,7 +183,15 @@ void Renderer::RenderWindow()
     stbi_set_flip_vertically_on_load(true);
     //Shader bagShader("assets/shaders/v_loadModel.vs", "assets/shaders/f_loadModel.fs");
     Shader rockShader("assets/shaders/v_loadModel2.vs", "assets/shaders/f_loadModel2.fs");
-    Model rockModel("E:/Projects/GitHub/TerrainGeneration_OpenGL/TerrainGeneration_OpenGL/assets/rock/rock.obj");
+
+    std::string rockPath = findFile("rock.obj");
+    for (size_t i = 0; i < rockPath.length(); ++i) {
+        if (rockPath[i] == '\\') {
+            rockPath[i] = '/';
+        }
+    }
+
+    Model rockModel(rockPath);
 
     RenderMap();
 
