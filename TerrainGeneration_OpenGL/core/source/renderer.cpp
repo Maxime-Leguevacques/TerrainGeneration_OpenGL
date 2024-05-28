@@ -103,7 +103,7 @@ void Renderer::RenderMap()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    std::cout << "highest y : " << map->highestPoint << "/nlowest y : " << map->lowestPoint << std::endl;
+    std::cout << "highest y : " << map->highestPoint << "\tlowest y : " << map->lowestPoint << std::endl;
 
 }
 

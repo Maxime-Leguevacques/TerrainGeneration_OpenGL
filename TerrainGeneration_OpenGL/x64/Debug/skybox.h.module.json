@@ -5,14 +5,14 @@
         {
             "primary-output": "x64\\Debug\\skybox.h.obj",
             "outputs": [
-                "C:\\Users\\m.leguevacques\\Documents\\Projects\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\vc143.pdb",
+                "C:\\Users\\Maxim\\Dev\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\vc143.pdb",
                 "x64\\Debug\\",
-                "C:\\Users\\m.leguevacques\\Documents\\Projects\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\skybox.h.ifc"
+                "C:\\Users\\Maxim\\Dev\\TerrainGeneration_OpenGL\\TerrainGeneration_OpenGL\\x64\\Debug\\skybox.h.ifc"
             ],
             "provides": [
                 {
                     "logical-name": "core\\include\\skybox.h",
-                    "source-path": "c:\\users\\m.leguevacques\\documents\\projects\\terraingeneration_opengl\\terraingeneration_opengl\\core\\include\\skybox.h",
+                    "source-path": "c:\\users\\maxim\\dev\\terraingeneration_opengl\\terraingeneration_opengl\\core\\include\\skybox.h",
                     "lookup-method": "absolute"
                 }
             ],

@@ -54,8 +54,6 @@ unsigned int Texture::loadCubemap(std::vector<std::string> faces)
 
     int width, height, nrChannels;
 
-
-
     return 0;
 }
 
